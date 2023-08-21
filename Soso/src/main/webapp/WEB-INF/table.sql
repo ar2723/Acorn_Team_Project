@@ -155,11 +155,12 @@ ADD a_regdate DATE;
 
 -- 책 등록 위한 TB
 CREATE TABLE BOOK_TB(
-    NUM NUMBER PRIMARY KEY, -- 책 등록 번호
-    NAME VARCHAR2(100), -- 책 이름
-    CAPTION VARCHAR2(200),-- 책에 대한 설명(짧게)
-    LINK VARCHAR2(200),    -- 책 링크
-)
+    GROUP_NUM NUMBER, -- 소모임 번호
+    TITLE VARCHAR2(100),
+    LINK VARCHAR2(200),
+    IMAGE VARCHAR2(200),
+    isbn VARCHAR2(100), -- 책 이름
+    description CLOB)-- 책에 대한 설명(짧게)
 
 -- 책 TB 시퀀스
 CREATE SEQUENCE BOOK_TB_SEQ;

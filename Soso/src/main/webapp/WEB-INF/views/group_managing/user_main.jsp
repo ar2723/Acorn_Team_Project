@@ -78,7 +78,7 @@
 								    function deleteConfirm() {
 								        const isDelete = confirm("${id} 님 탈퇴 하시겠습니까?");
 								        if(isDelete) {
-								            location.href = "${pageContext.request.contextPath}/group_managing/group_userdropOut?group_num=${dto.num}";
+								            location.href = "${pageContext.request.contextPath}/group_managing/group_userdropOut?group_num=${tmp.num}";
 								        }
 								    }
 								</script>

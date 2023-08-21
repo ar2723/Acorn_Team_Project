@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+.cafe_table .cafe_search { width:0; min-width:45%;}
+.cafe_table .cafe_search form{ position: relative; display:flex; box-sizing: border-box;}
+.cafe_table .cafe_search input[type="text"]{border: none; outline: none; padding: 1% 2%; background-color: rgb(246, 246, 246); }
+.cafe_table .cafe_search button{appearance: none; margin-left:10px; padding: 1% 2%; cursor: pointer; width:100px;  border:1px solid rgb(246, 246, 246); }
+.cafe_table .cafe_search select{position: relative;  padding: 1% 2%;  border: none; outline: none; background-color:rgb(246, 246, 246); }
+.cafe_table .cafe_insert{display: flex; justify-content: flex-end;}
+.cafe_table .cafe_insert a:hover { font-weight:500; text-decoration: underline;}
+.cafe_table .table__body { max-height: calc(89% - 1.6rem); margin: .8rem auto; border-radius: .6rem; overflow: auto; overflow: overlay;}
+.cafe_table table { width: 100%;}
+.cafe_table table, th, td { border-collapse: collapse; padding: 1rem; text-align: left;}
+.cafe_table thead th { background-color: #cacaca; text-transform: capitalize;}
+.cafe_table tbody tr:nth-child(even) { background-color: #0000000b;}
+.cafe_table tbody .title:hover { font-weight:500;}
+
+
+
