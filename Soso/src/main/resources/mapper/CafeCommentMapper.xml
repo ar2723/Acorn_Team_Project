@@ -23,7 +23,7 @@
 	<!-- 댓글은 실제로 삭제 하지 않고 deleted 칼럼에 저장된값을 no 에서 yes 로 수정하는 작업만한다. -->
 	<update id="delete" parameterType="int">
 		UPDATE comu_comment_tb
-		SET deleted = 1
+		SET deleted='yes'
 		WHERE comment_num=#{comment_num}
 	</update>
 	<!-- 댓글을 저장할때 댓글의 글번호도 미리 CafeCommentDto 객체에 담아 와야 한다. -->

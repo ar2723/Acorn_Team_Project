@@ -10,7 +10,7 @@ public interface CafeCommentDao {
 	//댓글 목록 얻어오기 
 	public List<CafeCommentDto> getList(CafeCommentDto dto);
 	//댓글 삭제 
-	public void delete(int comment_num);
+	public void delete(int num);
 	//댓글 추가 
 	public void insert(CafeCommentDto dto);
 	//추가할 댓글의 글번호를 리턴하는 메소드 

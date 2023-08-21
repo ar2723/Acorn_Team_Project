@@ -11,7 +11,7 @@ import com.acorn.soso.cafe.dto.CafeDto;
 
 public interface CafeService {
 	public void getList(HttpServletRequest request, Model model, int num);
-	public void getDetail(HttpServletRequest request, Model model, CafeDto dto);
+	public void getDetail(HttpServletRequest request, Model model);
 	public void saveContent(CafeDto dto);
 	public void updateContent(CafeDto dto);
 	public void deleteContent(int comu_num, HttpServletRequest request);

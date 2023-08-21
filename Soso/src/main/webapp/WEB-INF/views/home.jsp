@@ -380,11 +380,12 @@
     <section class="fixed01"></section>
 
     <section class="map">
-        <h3 class="title black">북메이트 오시는 길</h3>
+        <h3 class="title black">북메이트</h3>
         <div class="inner-wrap">
             <div class="map-one">
                 <div class="first_map">
-                <div id="daumRoughmapContainer1692434262801" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+                <div id="daumRoughmapContainer1690883727026" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+                
                 </div>
             </div>
             <div class="map-content pcol06 tcol06 mcol12">
@@ -415,16 +416,9 @@
         </div>
     </section>
     <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
-    <!--카카오맵 지도-->
-	<script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
-	<script charset="UTF-8">
-		new daum.roughmap.Lander({
-			"timestamp" : "1692434262801",
-			"key" : "2fw26",
-			"mapWidth" : "640",
-			"mapHeight" : "450"
-		}).render();
-	</script>
+
+
+   
     <!-- 글씨 타이핑 스크립트 -->
     <script>
         const content = "함께 하는 독서 모임 , 북메이트 ";
@@ -478,6 +472,16 @@
         });
     });
     </script>
+    <!-- 카카오 지도 불러오기 -->
+    <script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+        <script charset="UTF-8">
+             new daum.roughmap.Lander({
+                    "timestamp" : "1690883727026",
+                    "key" : "2fpum",
+                    "mapWidth" : "700",
+                    "mapHeight" : "450"
+         }).render();
+     </script>
      <script>
          const scrollTop = function () {
         // create HTML button element
