@@ -18,7 +18,7 @@
 	       <p class="title">비밀번호 찾기</p>
         </div>
         
-	    <form action="${pageContext.request.contextPath}/users/pwd_find" class="card p-2 needs-validation" method="post">
+	    <form action="${pageContext.request.contextPath}/users/pwd_find" method="post">
 	        <div class="mb-2">
 	            <label for="id" class="control-label">아이디</label>
 	            <input type="text" class="form-control" name="id" id="id"
@@ -29,8 +29,7 @@
 	            <label for="email" class="control-label">이메일</label>
 	            <input type="text" class="form-control" name="email" id="email"/>
 	        </div>
-	        
-	        <button class="btn btn-primary" type="submit">찾기</button>
+			<button class="btn btn-join" type="submit">찾기</button>
 	    </form>
     </div>
     

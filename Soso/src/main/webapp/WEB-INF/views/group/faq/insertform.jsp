@@ -7,10 +7,7 @@
 <meta charset="UTF-8">
 <title>소모임 문의사항</title>
 <style>
-	textarea{
-		width: 768px;
-		height: 300px;
-	}
+
 </style>
 </head>
 <body>

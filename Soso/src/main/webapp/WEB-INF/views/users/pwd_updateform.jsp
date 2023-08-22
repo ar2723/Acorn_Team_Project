@@ -29,8 +29,8 @@
                 <div class="invalid-feedback pwd2-feedback">비밀번호가 일치하지 않습니다.</div> 
             </div>
             
-            <button class="btn btn-primary" type="submit" disabled>수정하기</button>
-            <button class="btn btn-secondary" type="reset">리셋</button>
+            <button class="btn btn-join" type="submit" disabled>수정하기</button>
+            <button class="btn btn-cancle" type="reset">리셋</button>
         </form>
     </div>
     <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>

@@ -17,17 +17,15 @@
 						        <c:if test="${empty tmp.a_answer }">
 						        	<a href="${pageContext.request.contextPath}/group/faq/updateform?num=${tmp.num}"id="update">수정</a>
 
-						        	<a href="${pageContext.request.contextPath}/group/faq/delete?num=${tmp.num}&group_num=${tmp.group_num}">삭제</a>
+						        	<a href="${pageContext.request.contextPath}/group/faq/delete?num=${tmp.num}&group_num=${tmp.group_num}" id="delete">삭제</a>
 
 						        </c:if>
 						        <div class="answer" style="background-color: lightgrey;">${tmp.a_answer }</div> <!-- 이 부분을 추가 -->
 						        <!-- session id과 manger id를 검증해서 조건부 출력 -->
 						        <c:if test="${dto.manager_id == sessionScope.id }">
-						        	<a href="${pageContext.request.contextPath}/group/answer/insertform?num=${tmp.num}" id="answer">답변&수정</a>
+						        	<a href="${pageContext.request.contextPath}/group/answer/insertform?num=${tmp.num}" id="insertAnswer">답변</a>
 							        <a href="${pageContext.request.contextPath}/group/answer/updateform?num=${tmp.num}" id="updateAnswer" >답변 수정</a>
-
-						        <a href="${pageContext.request.contextPath}/group/answer/delete?num=${tmp.num}&group_num=${tmp.group_num}">답변 삭제(실제로는 update)</a>						        
-
+							        <a href="${pageContext.request.contextPath}/group/answer/delete?num=${tmp.num}&group_num=${tmp.group_num}" id="deleteAnswer">답변 삭제(실제로는 update)</a>						        
 						        </c:if>
 						    </td>
 						</tr>

@@ -39,8 +39,8 @@
 				<input class="form-control" type="text" id="email" name="email" value="${dto.email }"/>
 			</div>
 			<div class="mt-2">
-				<button class="btn btn-primary" type="submit">수정확인</button>
-				<button class="btn btn-secondary" type="reset">취소</button>
+				<button class="btn btn-join" type="submit">수정확인</button>
+				<button class="btn btn-cancle" type="reset">취소</button>
 			</div>
 		</form>	
 		

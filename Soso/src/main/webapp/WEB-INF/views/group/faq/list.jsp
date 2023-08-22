@@ -1,53 +1,49 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/group_managing_list.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/groupfaq.css" />
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>소모임 문의 게시판</title>
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css" type="text/css">
 </head>
 <body>
-	<div class="container">
-			<br>	
-			<h2 style="text-align: center">문의하기</h2>
-			<div style="width:100%; text-align:right;">
-				<a href="${pageContext.request.contextPath }/group/faq/insertform?num=${num}" class="btn btn-outline-dark" tabindex="-1" role="small-button" aria-disabled="true" >글 쓰기</a>
-				<a id="faqInsert" href="#">문의하기2</a>
-			</div>
+	<div class="cafe_table">
 			<br>
-			<div class="inner-wrap">
+				<div style="width:100%; text-align:right;">
+					<a id="faqInsert" href="#">문의하기</a>
+				</div>
+			<br>			
 				<div class="altertable">
-				 <table class="table">
+				 <table class="table__body">
 			        <tbody>
 			            <c:forEach var="tmp" items="${list}">
 			                <tr class="faq-row">
 			                    <td>${tmp.q_writer}</td>
 			                    <td class="title-cell">
-			                        <a style="color: black;" class="text-decoration-none q-title" href="#" data-content-id="content-${tmp.num}">${tmp.q_title}</a>
+			                        <a class="q-title" href="#" data-content-id="content-${tmp.num}">${tmp.q_title}</a>
 			                    </td>
 			                    <td style="text-align: center">${tmp.regdate}</td>
 			                </tr>
 			                <tr id="content-${tmp.num}" class="hidden-content">
 							    <td colspan="3">
-							        <div>${tmp.q_content}</div>
+							    	<textarea name="content" id="content" readonly>${tmp.q_content}</textarea>
 							        <c:if test="${empty tmp.a_answer }">
 							        	<a href="${pageContext.request.contextPath}/group/faq/updateform?num=${tmp.num}"id="update">수정</a>
-	
-							        	<a href="${pageContext.request.contextPath}/group/faq/delete?num=${tmp.num}&group_num=${tmp.group_num}">삭제</a>
-	
+							        	<a href="${pageContext.request.contextPath}/group/faq/delete?num=${tmp.num}&group_num=${tmp.group_num}" id="delete">삭제</a>
 							        </c:if>
-							        <div class="answer" style="background-color: lightgrey;">${tmp.a_answer }</div> <!-- 이 부분을 추가 -->
+							        <br />
+							        <c:if test="${not empty tmp.a_answer }">
+							        	<textarea name="answer" id="answer" readonly>${tmp.a_answer }</textarea>
+							        </c:if>
 							        <!-- session id과 manger id를 검증해서 조건부 출력 -->
 							        <c:if test="${dto.manager_id == sessionScope.id }">
-							        	<a href="${pageContext.request.contextPath}/group/answer/insertform?num=${tmp.num}" id="answer">답변&수정</a>
+							        	<a href="${pageContext.request.contextPath}/group/answer/insertform?num=${tmp.num}" id="insertAnswer">답변</a>
 								        <a href="${pageContext.request.contextPath}/group/answer/updateform?num=${tmp.num}" id="updateAnswer" >답변 수정</a>
-	
-							        <a href="${pageContext.request.contextPath}/group/answer/delete?num=${tmp.num}&group_num=${tmp.group_num}">답변 삭제(실제로는 update)</a>						        
-	
+							        	<a href="${pageContext.request.contextPath}/group/answer/delete?num=${tmp.num}&group_num=${tmp.group_num}" id="deleteAnswer">답변 삭제(실제로는 update)</a>						        
 							        </c:if>
 							    </td>
 							</tr>
@@ -55,7 +51,7 @@
 			        </tbody>
 			    </table>
 				<br />
-					<ul class="pagination" style="justify-content: center;">
+					<ul class="pagination">
 						<%--
 							startPageNum 이 1 이 아닌 경우에만 Prev 링크를 제공한다. 
 						 --%>
@@ -79,8 +75,7 @@
 						</c:if>				
 					</ul>
 			<br />
-			</div><!-- container -->
-		</div><!-- inner Wrap의 end -->
+		</div><!-- container의 end -->
 	    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script>
 			

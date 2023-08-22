@@ -51,7 +51,7 @@
 				<table class="table table-borderless">
 					<tr>
 						<th>비밀번호</th>
-						<td><a class="btn btn-secondary btn-sm" href="${pageContext.request.contextPath}/users/pwd_updateform">수정하기</a></td>
+						<td><a class="btn btn-gray btn-sm" href="${pageContext.request.contextPath}/users/pwd_updateform">수정하기</a></td>
 					</tr>
 					<tr>
 						<th>생일</th>
@@ -62,8 +62,8 @@
 						<td>${dto.gender }</td>
 					</tr>
 				</table>
-				<a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/users/updateform">개인정보 수정</a>
-				<a class="btn btn-outline-danger" href="javascript:deleteConfirm()">탈퇴</a>
+				<a class="btn btn-join" href="${pageContext.request.contextPath}/users/updateform">개인정보 수정</a>
+				<a class="btn btn-cancle" href="javascript:deleteConfirm()">탈퇴</a>
 			</div>
 		</div>
 		

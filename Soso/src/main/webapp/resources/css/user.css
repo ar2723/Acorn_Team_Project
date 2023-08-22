@@ -28,3 +28,30 @@ body {
 	font-weight: 600;
 	text-align: center;
 }
+
+.btn-join {
+    background-color: rgb(158 165 194 / 97%);
+	color: white;
+}
+
+.btn-outline-join {
+    color: rgb(158 165 194 / 97%);
+    border-color: rgb(158 165 194 / 97%);
+}
+
+.btn-cancle {
+	background-color: rgb(241 146 146 / 97%);
+	color: white;
+	
+}
+
+
+.btn-gray {
+	background-color: rgb(191, 191, 191);
+	color: white;
+}
+
+.btn-outline-gray {
+    color: rgb(191, 191, 191);
+    border-color: rgb(191, 191, 191);
+}

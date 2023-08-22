@@ -1,0 +1,37 @@
+@charset "UTF-8";
+#faqInsert, #update, #delete, #insertAnswer, #deleteAnswer, #updateAnswer{
+	border : 2px solid black;
+	border-radius : 10px;
+	display : inline-block; /* 필요한 만큼만 감싸기 */
+	justify-content : flex-end;
+    padding: 5px 10px; /* 원하는 패딩 값 설정 */
+}
+.faq-row{
+	border-bottom : 1.5px solid black;
+}
+.pagination{
+	display : flex;
+	justify-content : center;
+}
+.page-item{
+	margin : 1rem;
+}
+
+textarea{
+	resize : none;
+	border : none;
+	outling : none;
+	background-color : #00000000;
+	width : 80%;
+	margin : 0.5rem;
+}
+
+#answer{
+	background-color: #0000001f;
+	margin : 20px;
+	border : 2px dotted black;
+	border-radius : 10px;
+	display : inline-block; /* 필요한 만큼만 감싸기 */
+	justify-content : flex-end;
+    padding: 5px 10px; /* 원하는 패딩 값 설정 */
+}
