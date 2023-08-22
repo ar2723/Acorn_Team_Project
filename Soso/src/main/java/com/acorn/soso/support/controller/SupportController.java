@@ -106,14 +106,21 @@ public class SupportController {
 	}
 	//공지사항 삭제
 	@GetMapping("/support/support_notice_delete")
-	public String support_notice_delete(int notice_num, Model model,HttpServletRequest request) {
+	public String support_notice_delete(int notice_num, Model model) {
 		
 		NoticeDto dto = noticeService.getData(notice_num,model);
 		
-		noticeService.deleteNotice(notice_num, request);
+		noticeService.deleteNotice(notice_num,model);
 	
 		return "redirect:/support/support_notice";
 	}
+	//공지사항 디테일
+	@GetMapping("/support/support_notice_detail")
+	public String support_notice_detail(int notice_num, Model model) {
+		noticeService.getData(notice_num, model);
+		return "support/support_notice_detail";
+	}
+	
 	@GetMapping("/support/support_inquire")
 	public String support_inquire(HttpSession session, Model model) {
 		userService.getInfo(session, model);

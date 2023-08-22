@@ -26,8 +26,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 </head>
 <body>
-	
-	<main id="content" class="cs inquire">
+	<jsp:include page="/WEB-INF/views/include/navbar.jsp">
+		<jsp:param value="home" name="current"/>
+	</jsp:include>
 	<!-- 상단 배너 -->
 	<div class="head">
 		<h2 class="main_title">Notice 관리</h2>
@@ -84,8 +85,7 @@
 			</div>
 		</div>
 	</div>
-	
-</main>
+	<jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
 </body>
 </html>
 

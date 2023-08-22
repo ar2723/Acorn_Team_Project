@@ -90,7 +90,7 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public void deleteNotice(int notice_num, HttpServletRequest request) {
+	public void deleteNotice(int notice_num, Model model) {
 		noticeDao.delete(notice_num);
 	}
 

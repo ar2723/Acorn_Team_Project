@@ -90,13 +90,15 @@
 							</c:choose>
 						</td>
 						
-						<td>${tmp.title }</td>
+						<td>
+						<a href="${pageContext.request.contextPath }/support/support_notice_detail?notice_num=${tmp.notice_num}">${tmp.title }</a>
+						</td>
 						<td>${tmp.regdate }</td>
 						<td>
 							<a data-num="${tmp.notice_num }" href="${pageContext.request.contextPath }/support/support_notice_updateform?notice_num=${tmp.notice_num}">수정</a>
 						</td>
 						<td>
-							<button type="submit" id="deleteBtn">삭제</button>
+							<button data-num="${tmp.notice_num }"type="submit" id="deleteBtn">삭제</button>
 						</td>
 					</tr>
 					</c:forEach>
@@ -147,9 +149,10 @@
 			});
 			document.querySelector("#deleteBtn").addEventListener("click", (e)=>{
 				e.preventDefault();
-				const isTrue = confirm("공지사항을 삭제하시겠습니까?")
+				const isTrue = confirm("공지를 삭제하시겠습니까?")
 				if(isTrue){
-					location.href="${pageContext.request.contextPath}/support/support_notice_delete?notice_num=${dto.notice_num}";
+					const noticeNum = document.querySelector("#deleteBtn").getAttribute("data-num");
+					location.href="${pageContext.request.contextPath}/support/support_notice_delete?notice_num="+noticeNum;
 				}
 			});
 		</script>

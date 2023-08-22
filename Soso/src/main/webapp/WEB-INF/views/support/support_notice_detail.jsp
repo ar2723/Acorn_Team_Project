@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="path" value="${pageContext.request.contextPath}"/>    
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/support_notice</title>
+<title>/support_faq_insertform</title>
 <style>
-	.notice_management{
+	.noticeBtn{
 	width: 240px;
     height: 60px;
     margin: 0 auto;
@@ -20,21 +19,57 @@
     font-size: 18px;
     text-align: center;
 	}
+	.detail_notice{
+		margin-top: 14px;
+		border-top: 2px solid black;
+	}
+	.notice_head{
+		line-height: 18px;
+		background-color: #f7f7f7;
+	}
+	.notice_head .info{
+		float: right;
+		margin-right: 40px;
+		font-size: 14px;
+	}
+	.notice_content {
+	    margin: 0 0 20px;
+	    padding: 46px 50px 54px;
+	    border-top: 1px solid #d3d3d3;
+	    border-bottom: 1px solid #d3d3d3;
+	    line-height: 19px;
+	    overflow: hidden;
+	}
+	.btn_list{
+	    width: 130px;
+	    height: 48px;
+	    display: inline-block;
+	    border-radius: 0;
+	    border: 1px solid #d8d8d8;
+	    background-color: #f7f7f7;
+	    text-align: center;
+	    line-height: 48px;
+	    font-size: 14px;
+	    color: #333;
+	}
 </style>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reset.css" type="text/css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/support/support_notice.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/support/support_inquire.css" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">
-        <jsp:param value="login" name="current"/>
-    </jsp:include>
+	<jsp:include page="/WEB-INF/views/include/navbar.jsp">
+		<jsp:param value="home" name="current"/>
+	</jsp:include>
+	
+	<!-- 상단 배너 -->
 	<div class="head">
-		<h2>공지사항</h2>
-		<p class="sub_text">BookMate에서 알려드립니다.</p>
+		<h2 class="main_title">공지사항</h2>
+		<p class="sub_text">북메이트에서 알려 드립니다.</p>
 	</div>
 	<!-- 메인 메뉴바 시작 -->
+	<div class="main_area">
 	<ul class="menu_bar">
 		<li class="menu_home">
 			<a class="nav-link active" href="${pageContext.request.contextPath }/support/support_main">고객센터</a>
@@ -49,109 +84,32 @@
 			<a class="nav-link" href="${pageContext.request.contextPath }/support/support_inquire">문의하기</a>
 		</li>
 	</ul>
-	<!-- 메인 메뉴바 끝 -->
-	<div class="container">
-		<div class="main_content">
-			<h3 class="faq">공지사항</h3>
-			<table class="table">
-				<thead class="table-light">
-					<tr>
-						<th>번호</th>
-						<th>분류</th>
-						<th>제목</th>
-						<th>작성일</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td>공지</td>
-						<td>[비회원] 신청 업데이트 안내</td>
-						<td>2023.08.03</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>공지</td>
-						<td>[비회원] 신청 업데이트 안내</td>
-						<td>2023.08.03</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>공지</td>
-						<td>[비회원] 신청 업데이트 안내</td>
-						<td>2023.08.03</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>공지</td>
-						<td>[비회원] 신청 업데이트 안내</td>
-						<td>2023.08.03</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>공지</td>
-						<td>[비회원] 신청 업데이트 안내</td>
-						<td>2023.08.03</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>공지</td>
-						<td>[비회원] 신청 업데이트 안내</td>
-						<td>2023.08.03</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>공지</td>
-						<td>[비회원] 신청 업데이트 안내</td>
-						<td>2023.08.03</td>
-					</tr>
-				</tbody>
-			</table>
-			<a href="${pageContext.request.contextPath }/support/support_notice_insertform" class="notice_management">Notice 관리</a>
+		<div class="body_area">
+			<div class="main_content">
+				<h3 style="font-size:20px">공지사항</h3>
+				<article class="detail_notice">
+					<input type="hidden" name="notice_num" value="${dto.notice_num }"/>
+					<div class="notice_head">
+						<h6 class="title" style="display:inline-block">${dto.title }</h6>
+						<span class="info">
+							<span>작성일 : ${dto.regdate }</span>
+						</span>
+					</div>
+					<div class="notice_content">
+						<pre>${dto.content }</pre>
+					</div>
+					<p class="info_message">
+						이 사이트는 reCAPTCHA에 의해 보호되며 Google 개인 정보 취급 방침 및 서비스 약관이 적용됩니다.
+					</p>
+					
+					<div style="text-align: center">
+						<a class="btn_list" href="${pageContext.request.contextPath }/support/support_notice">목록</a>
+					</div>
+				</article>
+			</div>
 		</div>
 	</div>
-	<div>
-		<nav>
-			<ul class="pagination">
-				<%--
-					startPageNum 이 1 이 아닌 경우에만 Prev 링크를 제공한다. 
-					&condition=${condition}&keyword=${encodedK}
-				 --%>
-				<c:if test="${startPageNum ne 1 }">
-					<li class="page-item">
-						<a class="page-link animate__animated" href="list?pageNum=${startPageNum-1 }&condition=${condition}&keyword=${encodedK}">Prev</a>
-					</li>
-				</c:if>
-				<c:forEach var="i" begin="${startPageNum }" end="${endPageNum }">
-					<li class="page-item ${pageNum eq i ? 'active' : '' }">
-						<a class="page-link animate__animated" href="list?pageNum=${i }&condition=${condition}&keyword=${encodedK}">${i }</a>
-					</li>
-				</c:forEach>
-				<%--
-					마지막 페이지 번호가 전체 페이지의 갯수보다 작으면 Next 링크를 제공한다. 
-				 --%>
-				<c:if test="${endPageNum lt totalPageCount }">
-					<li class="page-item">
-						<a class="page-link animate__animated" href="list?pageNum=${endPageNum+1 }&condition=${condition}&keyword=${encodedK}">Next</a>
-					</li>
-				</c:if>				
-			</ul>
-		</nav>
-		<script>
-			document.querySelectorAll(".pagination a").forEach(function(item){
-				//item 은 a 의 참조값이다 모든 a 요소에 mouseover 이벤트가 발생했을때 실행할 함수 등록
-				item.addEventListener("mouseover", function(e){
-					//애니메이션 클래스를 추가해서 애니메이션이 동작하도록한다.
-					e.target.classList.add("animate__swing");
-				});
-				//item 은 a 의 참조값이다 모든 a 요소에 animationend 이벤트가 발생했을때 실행할 함수 등록
-				item.addEventListener("animationend", function(e){
-					//애니메이션 클래스를 제거해서 다음번에 추가 되면 다시 애니매이션이 동작 되도록한다.
-					e.target.classList.remove("animate__swing");
-				});
-			});
-		</script>
-	</div>
+	
 	<jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
 </body>
 </html>

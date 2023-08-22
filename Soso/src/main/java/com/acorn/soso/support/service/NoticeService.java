@@ -16,5 +16,5 @@ public interface NoticeService {
 	//공지 수정
 	public void updateNotice(NoticeDto dto);
 	//공지 삭제
-	public void deleteNotice(int notice_num, HttpServletRequest request);
+	public void deleteNotice(int notice_num, Model model);
 }
