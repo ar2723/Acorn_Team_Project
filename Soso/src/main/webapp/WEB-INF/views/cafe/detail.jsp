@@ -5,15 +5,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/views/cafe/detail.jsp</title>
+<title>커뮤니티  글쓰기</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/community/community_detail.css" />
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">
 		<jsp:param value="home" name="current"/>
 	</jsp:include>
-	<div class="container">
-		<div style="float: right;">
+	<section>
+		<div class="inner-wrap">
 		<%-- 만일 이전글(더 옛날글)의 글번호가 0 가 아니라면(이전글이 존재 한다면) --%>
 		<c:if test="${cafeDto.prevNum ne 0}">
 			<a href="${pageContext.request.contextPath}/cafe/detail?comu_num=${cafeDto.prevNum }&group_num=${cafeDto.group_num}&condition=${condition}&keyword=${encodedK}" 
@@ -37,62 +37,51 @@
 			</p>
 		</c:if>
 		</div>
-		<h3 style="font-weight: bold;">${cafeDto.title }</h3>
-		<table class="table table-bordered ">
-			<tr>
-				<th>글번호</th>
-				<td>${cafeDto.comu_num}</td>
-			</tr>
-			<tr>
-				<th>탭</th>
-				<td></td>
-			</tr>
-			<tr>
-				<th>작성자</th>
-				<td>${cafeDto.writer}</td>
-			</tr>
-			
-			<tr>
-				<th>조회수</th>
-				<td>${cafeDto.viewCount}</td>	
-			</tr>
-			<tr>
-				<th>작성일</th>
-				<td>${cafeDto.regdate}</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<div>${cafeDto.content}</div>
-				</td>
-			</tr>	
-		</table>
-		<%-- 로그인된 아이디와 글의 작성자가 같으면 수정, 삭제 링크를 제공한다 --%>
-		<c:if test="${sessionScope.id eq cafeDto.writer }">
-			<a href="updateform?comu_num=${cafeDto.comu_num}&group_num=${cafeDto.group_num}">수정</a>
-			<a href="javascript:" onclick="deleteConfirm()">삭제</a>
-			<script>
-				function deleteConfirm(){
-					const isDelete=confirm("이 글을 삭제 하겠습니까?");
-					if(isDelete){
-						location.href="delete?comu_num=${cafeDto.comu_num}&group_num=${cafeDto.group_num}";
-					}
-				}
-			</script>
-		</c:if>
-		<h6 style="font-weight: bold;">댓글 쓰기</h6>
-		<!-- 원글에 댓글을 작성할 폼 -->
-		<form class="comment-form insert-form" action="comment_insert" method="post">
-			<!-- 원글의 글번호가 댓글의 ref_group 번호가 된다. -->
-			<input type="hidden" name="comu_num" value="${cafeDto.comu_num}"/>
-			<input type="hidden" name="group_num" value="${cafeDto.group_num}"/>
-			<!-- 원글의 작성자가 댓글의 대상자가 된다. -->
-			<input type="hidden" name="target_id" value="${cafeDto.writer}"/>
-			<textarea name="content" style="font-size: small;"></textarea>
-			<button type="submit">쓰 기</button>
-		</form>
-		
+		<!-- 게시글 영역 -->
+		<div class="inner-wrap">
+			<h3 class="title"></h3>
+			<div class="sub_link">
+				<li><a href="#">북메이트 커뮤니티</a></li>
+				<li> > </li>
+				<li><a href="#">글 보기</a></li>
+			</div>
+	     </div>
+	     <div class="inner-wrap">
+	     	<div class="contents">
+				<div class="contents_title">${cafeDto.title }</div>
+				<div class="sub_title">
+					<div class="contents_num">${cafeDto.comu_num}</div>
+					<div class="contents_viewCount">조회 ${cafeDto.viewCount}</div>
+					<div class="contents_regdate">${cafeDto.regdate}</div>
+					<div class="contents_writer">${cafeDto.writer}</div>
+					<div class="contents_btn">
+						<%-- 로그인된 아이디와 글의 작성자가 같으면 수정, 삭제 링크를 제공한다 --%>
+						<c:if test="${sessionScope.id eq cafeDto.writer }">
+							<div class="">
+								<a class="contents_delete" href="updateform?comu_num=${cafeDto.comu_num}&group_num=${cafeDto.group_num}">수정</a>
+							</div>
+							<div class="">
+								<a class="contents_update" href="javascript:" onclick="deleteConfirm()">삭제</a>
+							</div>
+							
+						</c:if>
+					</div>
+				</div>
+				<div class="contents_content">${cafeDto.content}</div>
+	     	</div>
+	     </div>
+	     <div class="inner-wrap">
+			<form class="comment-form insert-form" action="comment_insert" method="post">
+				<input type="hidden" name="comu_num" value="${cafeDto.comu_num}"/>
+				<input type="hidden" name="group_num" value="${cafeDto.group_num}"/>
+				<input type="hidden" name="target_id" value="${cafeDto.writer}"/>
+				<textarea name="content"></textarea>
+				<button type="submit">등록</button>
+			</form>
+	     </div>
 		<!-- 댓글 목록 -->
-		<div class="comments">
+		<div class="inner-wrap">
+			<div class="comments">
 			<ul>
 				<c:forEach var="tmp" items="${commentList }">
 					<c:choose>
@@ -101,10 +90,10 @@
 						</c:when>
 						<c:otherwise>
 							<c:if test="${tmp.comment_num eq tmp.comment_group }">
-								<li id="reli${tmp.comment_num }">
+								<li id="reli${tmp.comment_num }"></li>
 							</c:if>
 							<c:if test="${tmp.comment_num ne tmp.comment_group }">
-								<li id="reli${tmp.comment_num }" style="padding-left:50px;">
+								<li id="reli${tmp.comment_num }" style="padding-left:50px;"></li>
 									<svg class="reply-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-right" viewBox="0 0 16 16">
 			  							<path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5z"/>
 									</svg>
@@ -154,21 +143,29 @@
 										<textarea name="content">${tmp.content }</textarea>
 										<button type="submit">수정</button>
 									</form>
-								</c:if>
-								</li>		
+								</c:if>	
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>
 			</ul>
-		</div>		
-		<div class="loader">
+		 </div>		
+		</div>
+ 		<div class="loader">
 			<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
 				  <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
 				  <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
 			</svg>
 		</div>		
-	</div>
+	</section>
 	<script src="${pageContext.request.contextPath}/resources/js/gura_util.js"></script>
+	<script>
+		function deleteConfirm(){
+			const isDelete=confirm("이 글을 삭제 하겠습니까?");
+			if(isDelete){
+				location.href="delete?comu_num=${cafeDto.comu_num}&group_num=${cafeDto.group_num}";
+			}
+		}
+	</script>
 	<script>
 		//클라이언트가 로그인 했는지 여부
 		let isLogin=${ not empty id };

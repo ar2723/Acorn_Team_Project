@@ -82,7 +82,7 @@ public class GroupServiceImpl implements GroupService{
 		//보여줄 페이지의 끝 ROWNUM
 		int endRowNum = pageNum * PAGE_ROW_COUNT;
 	      
-		
+		int genre = Integer.parseInt(request.getParameter("genre"));
 		String keyword=request.getParameter("keyword");
 		String condition=request.getParameter("condition");
 		if(keyword==null) {
@@ -136,6 +136,7 @@ public class GroupServiceImpl implements GroupService{
 	      model.addAttribute("endPageNum", endPageNum);
 	      model.addAttribute("totalPageCount", totalPageCount);
 	      model.addAttribute("totalRow", totalRow);
+	      model.addAttribute("genre", genre);
 	}
 	
 	@Override

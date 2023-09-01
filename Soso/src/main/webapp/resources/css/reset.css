@@ -119,6 +119,7 @@ input, textarea {
     border: 0;
     outline: 0;
     vertical-align: top;
+    resize:none;
 }
 
 /* button 요소 */

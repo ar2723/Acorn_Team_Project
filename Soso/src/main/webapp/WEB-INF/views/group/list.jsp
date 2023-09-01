@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>북메이트 찾기</title>
 	<link rel="shortcut icon" type="image/x-icon" href="https://genfavicon.com/tmp/icon_7cacead7cd8483ca41a810db418dc8ab.ico">
 	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="${path }/resources/css/group_list.css" type="text/css">
@@ -112,7 +112,7 @@
         
     </section>
 	<jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
-    <script>
+	  <script>
       	AOS.init();
         //페이지 번호를 관리할 변수를 만들고 초기값 1 대입하기
         let currentPage=1;

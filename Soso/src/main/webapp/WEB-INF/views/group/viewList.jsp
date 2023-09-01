@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>북메이트 찾기</title>
 	<link rel="shortcut icon" type="image/x-icon" href="https://genfavicon.com/tmp/icon_7cacead7cd8483ca41a810db418dc8ab.ico">
 	<link rel="stylesheet" href="${path }/resources/css/common.css" type="text/css">
     <link rel="stylesheet" href="${path }/resources/css/group_list.css" type="text/css">

@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>북메이트 찾기</title>
 	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">

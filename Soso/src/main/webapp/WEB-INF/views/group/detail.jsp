@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>북메이트 찾기</title>
 <style>
    /* 별점 css */
    #myform fieldset {
