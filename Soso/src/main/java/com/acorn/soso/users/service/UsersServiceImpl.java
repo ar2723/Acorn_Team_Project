@@ -70,8 +70,9 @@ public class UsersServiceImpl implements UsersService{
 
 	@Override
 	public void loginprocess(UsersDto dto, HttpSession session) {
-		//login, update등 에서 중복되어 사용하므로 따로 메소드로 구성하여 재사용
-		Boolean isValid = isSamePwd(dto);
+		String id = dto.getId();
+		//id가 존재하며, pwd가 동일할 때만 true
+		Boolean isValid = isExist(id) ? isSamePwd(dto) ? true : false : false;
 		
 		//만일 유효한 정보이면
 		if(isValid) {
