@@ -22,7 +22,7 @@
 	</insert>
 	
 	<select id="getData" parameterType="string" resultType="usersDto">
-		SELECT id, pwd, profile, email, regdate, Name, SVC_USE_PCY_AGMT_YN, PS_INFO_PROC_AGMT_YN, MKT_INFO_RECV_AGMT_YN
+		SELECT id, pwd, profile, email, regdate, Name, SVC_USE_PCY_AGMT_YN, PS_INFO_PROC_AGMT_YN, MKT_INFO_RECV_AGMT_YN, social
 		FROM users
 		WHERE id = #{id}
 	</select>
@@ -51,7 +51,7 @@
 	</delete>
 	
 	<select id="getId" parameterType="string" resultType="usersDto">
-		SELECT id, email
+		SELECT id, email, social
 		FROM users
 		WHERE name = #{name}
 	</select>
