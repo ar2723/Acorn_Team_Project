@@ -41,14 +41,10 @@ public class GroupManagingController {
 	
 	@Autowired
 	GroupManagingService service;
-	
 	@Autowired
 	private CafeService cafeService;
-	
 	@Autowired
 	private GroupManagingService groupManagingService;
-
-	private GroupManagingDao groupManagingDao;
 	
 	@GetMapping("/group_managing/admin_main")
 	public String admin_main(HttpServletRequest request, HttpSession session) {

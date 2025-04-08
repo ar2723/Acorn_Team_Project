@@ -35,17 +35,13 @@ public class GroupController {
 
 	@Value("${file.location}")
 	private String fileLocation;
-	
 	@Autowired
 	private GroupService service;
-	
 	@Autowired
 	private GroupManagingService managingService;
-	
 	@Autowired
 	private BookService BookService;
-	
-	
+
 	//소모임의 문의 답변 delete(실제로는 update)
 	@GetMapping("/group/answer/delete")
 	public String groupAnswerDelete(HttpServletRequest request, int num, int group_num) {
@@ -67,7 +63,6 @@ public class GroupController {
 	public String groupAnswerUpdateForm(HttpServletRequest request, Model model) {
 		//getData가져오기
 		service.groupFAQGetData(request, model);
-		
 		return "group/answer/updateform";
 	}
 	
@@ -207,10 +202,8 @@ public class GroupController {
 		return "group/group_joinform";
 	}
 	
-	//소모임 가입 신청
+	// 소모임 가입 신청
 	@PostMapping("/group/join")
-	//num값을 가져오기 위한 request
-	//정보를 담기 위한 model
 	public String join(HttpServletRequest request) {
 		service.joinGroup(request);
 		//num을 얻어와
@@ -234,7 +227,7 @@ public class GroupController {
 		managingService.getMemberList(group_num, request);
 		
 		//로그인 여부를 토대로 서비스 실행 여부를 정한다.
-		String id =(String)request.getSession().getAttribute("id");
+		String id = (String)request.getSession().getAttribute("id");
 		if(id != null) {
 			//소모임의 찜 여부를 가져온다.
 			service.knowjjim(request);
@@ -248,7 +241,6 @@ public class GroupController {
 		
 		model.addAttribute("jjimCount", service.jjimCount(request));
 		return "group/group_page";
-
 	}
 	
 	//리뷰 삭제
@@ -257,6 +249,7 @@ public class GroupController {
 		service.deleteReview(request);
 		return "redirect:/group/group_page?num="+group_num;
 	}
+
 	//댓글 더보기
 	@RequestMapping("/group/ajax_review_list")
 	public String reviewList(HttpServletRequest request) {
@@ -268,6 +261,7 @@ public class GroupController {
 		service.moreReview(request);
 		return "group/ajax_review_list";
 	}
+
 	//새로운 댓글 저장 요청 처리
 	@RequestMapping("group/comment/review_insert")
 	public String reviewInsert(GroupReviewDto dto, HttpSession session) {
@@ -276,6 +270,7 @@ public class GroupController {
 		int num = dto.getGroup_num();
 		return "redirect:/group/group_page?num="+num;
 	}
+
 	//코멘트 등록하기
 	@GetMapping("/group/comment/comment_insert_form")
 	public String commentInsertForm(HttpServletRequest request, int num) {
@@ -309,7 +304,6 @@ public class GroupController {
 	public String update(GroupDto dto, HttpServletRequest request) {
 		service.update(dto, request);
 		return "redirect:/group/list";
-		
 	}
 	
 	//updateform 이동
@@ -324,7 +318,6 @@ public class GroupController {
 	public String detail(HttpServletRequest request, Model model) {
 		service.getDetail(request, model);		
 		return "group/detail";
-
 	}
 	
 	//사진 업로드 & DB 저장
@@ -355,36 +348,30 @@ public class GroupController {
         return "group/list";
 	}
 	
-	//ajax로 리스트 페이지 불러오기
+	// ajax로 리스트 페이지 불러오기
 	@GetMapping("/group/ajax_list")
 	public String listajax(HttpServletRequest request, Model model) {
 		String genreParam = request.getParameter("genre");
 		int genre = Integer.parseInt(genreParam);
 
-        if (genre == -1) {//가져온 값이 -1이면 전체 배열을 출력
-            service.getList(request, model);
-        } else {//아니면 가져온 숫자만큼의 배열을 출
-            service.getGroupsByGenre(request, model);
-        }
+		// 가져온 값이 -1이면 전체 배열을 출력
+        if (genre == -1) service.getList(request, model);
+		//아니면 가져온 숫자만큼의 배열을 출
+        else service.getGroupsByGenre(request, model);
         return "group/ajax_list";
 	}
 	
 	//ajax로 리스트 페이지 불러오기
 	@GetMapping("/group/ajax_viewList")
 	public String viewlistajax(HttpServletRequest request, Model model) {
-
-            service.getViewList(request, model);
-
+		service.getViewList(request, model);
         return "group/ajax_viewList";
 	}
 	
 	//소모임 조회수 리스트 이동
 	@GetMapping("/group/viewList")
 	public String viewList(HttpServletRequest request, Model model) {
-		
     	service.getViewList(request, model);
-	
 		return "group/viewList";
 	}
-	
 }
