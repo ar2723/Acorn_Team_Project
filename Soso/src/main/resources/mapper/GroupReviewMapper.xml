@@ -2,61 +2,92 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="groupReview">
-<select id="getList" parameterType="reviewDto" resultType="reviewDto">
-      SELECT *
-      FROM
-         (SELECT result1.*, ROWNUM AS rnum
-         FROM
-            (SELECT reivew, title, writer, review, ref_group, rate,
-                group_review_tb.regdate, profile
-            FROM group_review_tb
-            INNER JOIN users
-            ON group_review_tb.writer=users.id
-            WHERE ref_group=#{ref_group}
-            ORDER BY group_review_tb.regdate desc, num ASC) result1)
-      WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum}   
-   </select>
-   <!-- 디테일 페이지에 보여주기 위한 댓글 -->
-   <select id="reviewList" parameterType="int" resultType="reviewDto">
-   		SELECT review_num, group_num, writer, content, rate, regdate
+    <select id="getList" parameterType="reviewDto" resultType="reviewDto">
+        SELECT *
+        FROM (
+            SELECT
+                result1.*,
+                ROWNUM AS rnum
+            FROM (
+                SELECT
+                      reivew
+                    , title
+                    , writer
+                    , review
+                    , ref_group
+                    , rate
+                    , group_review_tb.regdate
+                    , profile
+                FROM group_review_tb
+                INNER JOIN users ON group_review_tb.writer=users.id
+                WHERE ref_group=#{ref_group}
+                ORDER BY group_review_tb.regdate desc, num ASC
+            ) result1
+        )
+        WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum}
+    </select>
+    <!-- 디테일 페이지에 보여주기 위한 댓글 -->
+    <select id="reviewList" parameterType="int" resultType="reviewDto">
+   		SELECT
+   		      review_num
+   		    , group_num
+   		    , writer
+   		    , content
+   		    , rate
+   		    , regdate
    		FROM group_review_tb
-   		WHERE group_num=#{num}
+   		WHERE group_num = #{num}
    		ORDER BY review_num
-   </select>
-   <select id="getCount" parameterType="int" resultType="int">
-      SELECT NVL(MAX(ROWNUM), 0)
-      FROM group_review_tb
-      WHERE ref_group=#{ref_group}
-   </select>
-   <select id="getData" parameterType="int" resultType="reviewDto">
-      SELECT review_num, group_num, writer, content, rate, regdate
-      FROM group_review_tb
-      WHERE review_num=#{num}
-   </select>
-   <delete id="delete" parameterType="int">
-   	  DELETE FROM group_review_tb
-   	  WHERE review_num=#{num}
-   </delete>
-   <insert id="insert" parameterType="reviewDto">
-   	  INSERT INTO GROUP_REVIEW_TB
-   	  (review_num, writer, content, group_num, rate, regdate)
-   	  VALUES(#{review_num}, #{writer}, #{content}, #{group_num}, #{rate}, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD'))
+    </select>
+    <select id="getCount" parameterType="int" resultType="int">
+        SELECT NVL(MAX(ROWNUM), 0)
+        FROM group_review_tb
+        WHERE ref_group=#{ref_group}
+    </select>
+    <select id="getData" parameterType="int" resultType="reviewDto">
+        SELECT
+              review_num
+            , group_num
+            , writer
+            , content
+            , rate
+            , regdate
+        FROM group_review_tb
+        WHERE review_num=#{num}
+    </select>
+    <delete id="delete" parameterType="int">
+   	    DELETE FROM group_review_tb WHERE review_num = #{num}
+    </delete>
+    <insert id="insert" parameterType="reviewDto">
+        INSERT INTO GROUP_REVIEW_TB (
+              review_num
+            , writer
+            , content
+            , group_num
+            , rate
+            , regdate
+        )
+   	    VALUES (
+              #{review_num}
+            , #{writer}
+            , #{content}
+            , #{group_num}
+            , #{rate}
+            , TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+        )
    </insert>
-   <select id="getSequence" resultType="int">
-      SELECT review_seq.NEXTVAL
-      FROM DUAL
-   </select>
-   <update id="update" parameterType="reviewDto">
-      UPDATE group_review_tb
-      SET review=#{review}, rate=#{rate}
-      WHERE review_num=#{num}
-   </update>
+    <select id="getSequence" resultType="int">
+        SELECT review_seq.NEXTVAL FROM DUAL
+    </select>
+    <update id="update" parameterType="reviewDto">
+        UPDATE group_review_tb
+        SET review=#{review}, rate=#{rate}
+        WHERE review_num=#{num}
+    </update>
 	<select id="getAvg" parameterType="string" resultType="double">
-	    <![CDATA[
-	        SELECT ROUND(AVG(rate), 2) AS average_rate
-	        FROM group_review_tb
-	        WHERE title=#{title}
-	    ]]>
+        SELECT ROUND(AVG(rate), 2) AS average_rate
+        FROM group_review_tb
+        WHERE title = #{title}
 	</select>
 		<select id="getEqual" parameterType="reviewDto" resultType="reviewDto">
 		SELECT *

@@ -3,26 +3,51 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="join">
 	<insert id="insert" parameterType="joinDto">
-		INSERT INTO group_join_tb
-		(num, group_Num, user_Id, intro, isjoin, request_dt)
-		VALUES (join_seq.NEXTVAL, #{group_Num}, #{user_Id}, #{intro}, 1, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD'))
+		INSERT INTO group_join_tb (
+			  num
+			, group_Num
+			, user_Id
+			, intro
+			, isjoin
+			, request_dt
+		)
+		VALUES (
+			  join_seq.NEXTVAL
+			, #{group_Num}
+			, #{user_Id}
+			, #{intro}
+			, 1
+			, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+		)
 	</insert>
-	
 	<select id="getIsJoin" parameterType="joinDto" resultType="int">
 	    SELECT COALESCE(isjoin, -1) AS isjoin
 	    FROM GROUP_JOIN_TB
-	    WHERE group_num = #{group_Num} AND USER_ID = #{user_Id}
+	    WHERE group_num = #{group_Num}
+	    AND USER_ID = #{user_Id}
 	</select>
 	
 	<delete id="cancleJoin" parameterType="joinDto">
 		DELETE group_join_tb
-		WHERE group_num = #{group_Num} AND USER_ID = #{user_Id}
+		WHERE group_num = #{group_Num}
+		AND USER_ID = #{user_Id}
 	</delete>
 	
 	<insert id="managerJoin" parameterType="groupDto">
-		INSERT INTO group_join_tb
-		(num, group_Num, user_Id, isjoin, request_dt)
-		VALUES (join_seq.NEXTVAL, #{num}, #{manager_id}, 0, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD'))
+		INSERT INTO group_join_tb (
+			  num
+			, group_Num
+			, user_Id
+			, isjoin
+			, request_dt
+		)
+		VALUES (
+			  join_seq.NEXTVAL
+			, #{num}
+			, #{manager_id}
+			, 0
+			, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+		)
 	</insert>
 	<update id="updateNow" parameterType="groupDto">
 		UPDATE group_tb

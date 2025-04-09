@@ -3,18 +3,36 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="book">
     <insert id="saveBook" parameterType="bookDto">
-        INSERT INTO BOOK_TB
-        (group_num, title, link, image, isbn, description)
-        VALUES
-        (#{group_num}, #{title}, #{link}, #{image}, #{isbn}, #{description})
+        INSERT INTO BOOK_TB (
+              group_num
+            , title
+            , link
+            , image
+            , isbn
+            , description
+        ) VALUES (
+              #{group_num}
+            , #{title}
+            , #{link}
+            , #{image}
+            , #{isbn}
+            , #{description}
+        )
     </insert>
     <select id="bookList" parameterType="int" resultType="bookDto">
-    	SELECT group_num, title, link, image, isbn, description
+    	SELECT
+              group_num
+            , title
+            , link
+            , image
+            , isbn
+            , description
     	FROM BOOK_TB
     	WHERE group_num = #{group_num}
     </select>
     <delete id="bookDelete" parameterType="bookDto">
     	DELETE BOOK_TB
-    	WHERE isbn = #{isbn} AND group_num = #{group_num}
+    	WHERE isbn = #{isbn}
+    	AND group_num = #{group_num}
     </delete>
 </mapper>

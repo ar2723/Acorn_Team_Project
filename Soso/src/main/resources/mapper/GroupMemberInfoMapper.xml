@@ -3,44 +3,64 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="groupMemberInfo">
 	<select id="getWritingList" parameterType="GroupMemberInfoDto" resultType="GroupMemberInfoDto">
-		SELECT comu_num AS num, writer, title, regdate, group_num, header
-		FROM
-			(SELECT result1.*, ROWNUM AS rnum
-			FROM
-				(SELECT comu_num, writer, title, regdate, group_num, header
+		SELECT
+			  comu_num AS num
+			, writer
+			, title
+			, regdate
+			, group_num
+			, header
+		FROM (
+			SELECT result1.*, ROWNUM AS rnum
+			FROM (
+				SELECT
+					  comu_num
+					, writer
+					, title
+					, regdate
+					, group_num
+					, header
 				FROM community_board_tb
-				WHERE writer = #{writer} AND group_num = #{group_num}
-				ORDER BY comu_num DESC) result1)
-		<![CDATA[ 
-		WHERE rnum >= #{startRowNum} AND rnum <= #{endRowNum}
-		]]>
+				WHERE writer = #{writer}
+				AND group_num = #{group_num}
+				ORDER BY comu_num DESC
+			) result1
+		)
+		WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
 	</select>
 	
 	<select id="getWCount" parameterType="GroupMemberInfoDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0)
 		FROM community_board_tb
-		WHERE writer = #{writer} AND group_num = #{group_num}
+		WHERE writer = #{writer}
+		AND group_num = #{group_num}
 	</select>
 	<select id="getCommentList" parameterType="GroupMemberInfoDto" resultType="GroupMemberInfoDto">
 		SELECT *
-		FROM
-		    (SELECT result1.*, ROWNUM AS rnum
-		    FROM
-		        (SELECT cc.comu_num, cc.writer, cc.content, cc.regdate, cb.group_num, cb.title
+		FROM (
+			SELECT result1.*, ROWNUM AS rnum
+		    FROM (
+		    	SELECT
+					  cc.comu_num
+					, cc.writer
+					, cc.content
+					, cc.regdate
+					, cb.group_num
+					, cb.title
 		        FROM comu_comment_tb cc
-		        INNER JOIN community_board_tb cb
-		        ON cc.comu_num = cb.comu_num
-		        WHERE cc.writer = #{writer} AND group_num = #{group_num}
-		        ORDER BY comment_num DESC) result1)
-		<![CDATA[ 
-		WHERE rnum >= #{startRowNum} AND rnum <= #{endRowNum}
-		]]>
+		        INNER JOIN community_board_tb cb ON cc.comu_num = cb.comu_num
+		        WHERE cc.writer = #{writer}
+		        AND group_num = #{group_num}
+		        ORDER BY comment_num DESC
+		    ) result1
+		)
+		WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
 	</select>
 	<select id="getCCount" parameterType="GroupMemberInfoDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0)
 	 	FROM comu_comment_tb cc
-     	INNER JOIN community_board_tb cb
-      	ON cc.comu_num = cb.comu_num
-        WHERE cc.writer = #{writer} AND group_num = #{group_num}
+     	INNER JOIN community_board_tb cb ON cc.comu_num = cb.comu_num
+        WHERE cc.writer = #{writer}
+        AND group_num = #{group_num}
 	</select>
 </mapper>

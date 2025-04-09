@@ -16,7 +16,7 @@
 			</when>
 		</choose>
 	</sql>
-		<!-- 검색 기능을 위한2(genre 검색 위한) -->
+	<!-- 검색 기능을 위한2(genre 검색 위한) -->
 	<sql id="searchConditionGenre">
 		<choose>
 			<when test="name != null and caption != null">
@@ -39,57 +39,106 @@
 
 	<!-- 리스트  -->
 	<select id="getList" parameterType="groupDto" resultType="groupDto">
-      SELECT *
-      FROM
-         (SELECT result1.*, ROWNUM AS rnum
-         FROM
-            (SELECT num, name, caption, img_path, regdate, ended_dt, deadline_dt, start_dt,
-			manager_id, max_people, now_people, avrg_rate, meeting_loc, meeting_time,
-			genre, on_off, manager_comment, viewcount
-            FROM group_tb
-            <include refid="searchCondition"/>
-            ORDER BY num DESC) result1)
-      <!-- 에러 방지 영역 , 기호 사용 가능하다  -->
-      <![CDATA[ 
-      WHERE rnum >= #{startRowNum} AND rnum <= #{endRowNum}
-      ]]>
+		SELECT *
+		FROM (
+			SELECT result1.*, ROWNUM AS rnum
+			FROM (
+				SELECT
+					  num
+					, name
+					, caption
+					, img_path
+					, regdate
+					, ended_dt
+					, deadline_dt
+					, start_dt
+					, manager_id
+					, max_people
+					, now_people
+					, avrg_rate
+					, meeting_loc
+					, meeting_time
+					, genre
+					, on_off
+					, manager_comment
+					, viewcount
+				FROM group_tb
+				<include refid="searchCondition"/>
+				ORDER BY num DESC
+			) result1
+		)
+		WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
    </select>
    
    	<!--조회수 리스트  -->
 	<select id="getViewList" parameterType="groupDto" resultType="groupDto">
-      SELECT *
-      FROM
-         (SELECT result1.*, ROWNUM AS rnum
-         FROM
-            (SELECT num, name, caption, img_path, regdate, ended_dt, deadline_dt, start_dt,
-			manager_id, max_people, now_people, avrg_rate, meeting_loc, meeting_time,
-			genre, on_off, manager_comment, viewcount
-            FROM group_tb
-            <include refid="isGenre"/>
-            ORDER BY viewcount DESC) result1)
-      <!-- 에러 방지 영역 , 기호 사용 가능하다  -->
-      <![CDATA[ 
-      WHERE rnum >= #{startRowNum} AND rnum <= #{endRowNum}
-      ]]>
+		SELECT *
+		FROM (
+			SELECT
+			      result1.*
+				, ROWNUM AS rnum
+			FROM (
+				SELECT
+					  num
+					, name
+					, caption
+					, img_path
+					, regdate
+					, ended_dt
+					, deadline_dt
+					, start_dt
+					, manager_id
+					, max_people
+					, now_people
+					, avrg_rate
+					, meeting_loc
+					, meeting_time
+					, genre
+					, on_off
+					, manager_comment
+					, viewcount
+				FROM group_tb
+				<include refid="isGenre"/>
+				ORDER BY viewcount DESC
+			) result1
+		)
+		WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
    </select>
    
 	<!-- 소모임 genre 별로 검색 조건을 포함한 리스트 가져오기 -->
 	<select id="getGroupsByGenreAndSearch" parameterType="groupDto" resultType="groupDto">
 	    SELECT *
-	    FROM
-	        (SELECT result1.*, ROWNUM AS rnum
-	        FROM
-	            (SELECT num, name, caption, img_path, regdate, ended_dt, deadline_dt, start_dt,
-	            manager_id, max_people, now_people, avrg_rate, meeting_loc, meeting_time,
-	            genre, on_off, manager_comment, viewcount
+	    FROM (
+	    	SELECT
+				  result1.*
+				, ROWNUM AS rnum
+	        FROM (
+	        	SELECT
+					  num
+					, name
+					, caption
+					, img_path
+					, regdate
+					, ended_dt
+					, deadline_dt
+					, start_dt
+					, manager_id
+					, max_people
+					, now_people
+					, avrg_rate
+					, meeting_loc
+					, meeting_time
+					, genre
+					, on_off
+					, manager_comment
+					, viewcount
 	            FROM group_tb
 	            WHERE genre = #{genre}
 	            <include refid="searchConditionGenre"/>
-	            ORDER BY num DESC) result1)
-	    <!-- 에러 방지 영역 , 기호 사용 가능하다  -->
-	    <![CDATA[ 
-	    WHERE rnum >= #{startRowNum} AND rnum <= #{endRowNum}
-	    ]]>
+	            ORDER BY num DESC
+	        ) result1
+	    )
+	    WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
 	</select>
 
    <!-- 추후 별점순 정렬에 사용 할 수 있을 듯하여 주석처리
@@ -112,65 +161,115 @@
    </select>
     -->
    
-   <select id="getCount" parameterType="groupDto" resultType="int">
-      SELECT NVL(MAX(ROWNUM), 0)
-      FROM group_tb
-      <include refid="searchCondition"/>
-   </select>
+   	<select id="getCount" parameterType="groupDto" resultType="int">
+		SELECT NVL(MAX(ROWNUM), 0)
+		FROM group_tb
+		<include refid="searchCondition"/>
+   	</select>
    
    <!-- 그룹넘을 따로 넣어서 바인딩 -->
-   <insert id="insert" parameterType="groupDto">
+   	<insert id="insert" parameterType="groupDto">
 		INSERT INTO group_tb (
-		num, name, caption, img_path, avrg_rate, 
-		regdate, ended_dt, deadline_dt, start_dt, 
-		manager_id, max_people, meeting_loc, meeting_time, genre, on_off, manager_comment)
-		VALUES (
-		#{num}, #{name}, #{caption}, #{img_path}, 0, 
-		TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD'), TO_DATE(#{ended_dt}, 'RR/MM/DD'), TO_DATE(#{deadline_dt}, 'RR/MM/DD'), TO_DATE(#{start_dt}, 'RR/MM/DD'),
-		#{manager_id}, #{max_people}, #{meeting_loc}, #{meeting_time}, #{genre}, #{on_off}, #{manager_comment})
-   </insert>
+			  num
+			, name
+			, caption
+			, img_path
+			, avrg_rate
+			, regdate
+			, ended_dt
+			, deadline_dt
+			, start_dt
+			, manager_id
+			, max_people
+			, meeting_loc
+			, meeting_time
+			, genre
+			, on_off
+			, manager_comment
+		) VALUES (
+			  #{num}
+			, #{name}
+			, #{caption}
+			, #{img_path}
+			, 0
+			, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+			, TO_DATE(#{ended_dt}, 'RR/MM/DD')
+			, TO_DATE(#{deadline_dt}, 'RR/MM/DD')
+			, TO_DATE(#{start_dt}, 'RR/MM/DD')
+			, #{manager_id}
+			, #{max_people}
+			, #{meeting_loc}
+			, #{meeting_time}
+			, #{genre}
+			, #{on_off}
+			, #{manager_comment}
+		)
+   	</insert>
    
-   <!-- 저장 예정인 그룹의 글번호를 미리 얻어내기  -->
+   	<!-- 저장 예정인 그룹의 글번호를 미리 얻어내기  -->
 	<select id="getSequence" resultType="int">
 		SELECT group_seq.NEXTVAL
 		FROM DUAL
 	</select>
-   
-   <select id="getData" parameterType="int" resultType="groupDto">
+   	<select id="getData" parameterType="int" resultType="groupDto">
 		SELECT result1.*
-		FROM
-		   (SELECT num, name, caption, avrg_rate, regdate, ended_dt, deadline_dt, start_dt, 
-			manager_id, max_people, meeting_loc, meeting_time, genre, on_off, manager_comment,
-		      LAG(num, 1, 0) OVER (ORDER BY num DESC) AS prevNum,
-		      LEAD(num, 1, 0) OVER (ORDER BY num DESC) AS nextNum
-		   FROM group_tb) result1
+		FROM (
+			SELECT
+				  num
+				, name
+				, caption
+				, avrg_rate
+				, regdate
+				, ended_dt
+				, deadline_dt
+				, start_dt
+				, manager_id
+				, max_people
+				, meeting_loc
+				, meeting_time
+				, genre
+				, on_off
+				, manager_comment
+				, LAG(num, 1, 0) OVER (ORDER BY num DESC) AS prevNum
+				, LEAD(num, 1, 0) OVER (ORDER BY num DESC) AS nextNum
+		  	FROM group_tb
+		) result1
 		WHERE num = #{num}
-   </select>
-   
-   <select id="getData2" parameterType="string" resultType="groupDto">
+   	</select>
+   	<select id="getData2" parameterType="string" resultType="groupDto">
 		SELECT *
-		FROM
-		   (SELECT num, writer, title, caption, img_path, viewcount, regdate,
-		      LAG(num, 1, 0) OVER (ORDER BY num DESC) AS prevNum,
-		      LEAD(num, 1, 0) OVER (ORDER BY num DESC) AS nextNum
-		   FROM group_tb
-		   <include refid="searchCondition"/>
-		   ORDER BY num DESC)
+		FROM (
+			SELECT
+				  num
+				, writer
+				, title
+				, caption
+				, img_path
+				, viewcount
+				, regdate
+				, LAG(num, 1, 0) OVER (ORDER BY num DESC) AS prevNum
+				, LEAD(num, 1, 0) OVER (ORDER BY num DESC) AS nextNum
+			FROM group_tb
+			<include refid="searchCondition"/>
+			ORDER BY num DESC
+		)
 		WHERE title = #{title}
-   </select>
-   <update id="update" parameterType="groupDto">
+   	</select>
+   	<update id="update" parameterType="groupDto">
    		UPDATE group_tb
-   		SET title = #{title}, caption=#{caption}, img_path=#{img_path}
+   		SET
+   		    title = #{title}
+   		  , caption = #{caption}
+   		  , img_path = #{img_path}
    		WHERE num = #{num}
-   </update>
-   <delete id="delete" parameterType="int">
+   	</update>
+   	<delete id="delete" parameterType="int">
    		DELETE FROM group_tb
-   		WHERE num=#{num}
-   </delete>
-   <update id="addViewCount" parameterType="int">
+   		WHERE num = #{num}
+   	</delete>
+   	<update id="addViewCount" parameterType="int">
 	    UPDATE group_tb
-	    SET viewcount=viewcount+1
+	    SET viewcount = viewcount + 1
 	    WHERE num=#{num}
 	</update>
-   
 </mapper>

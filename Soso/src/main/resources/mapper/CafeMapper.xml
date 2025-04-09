@@ -19,17 +19,19 @@
 	
 	<select id="getList" parameterType="cafeDto" resultType="cafeDto">
 		SELECT *
-		FROM
-			(SELECT result1.*, ROWNUM AS rcomu_num
-			FROM
-				(SELECT comu_num, writer, title, header, content, viewCount, regdate
+		FROM (
+			SELECT
+			      result1.*
+				, ROWNUM AS rcomu_num
+			FROM (
+				SELECT comu_num, writer, title, header, content, viewCount, regdate
 				FROM community_board_tb
 				WHERE group_num = #{group_num}
 				<include refid="searchCondition"/>
-				ORDER BY comu_num DESC) result1)
-		<![CDATA[ 
-		WHERE rcomu_num >= #{startRowNum} AND rcomu_num <= #{endRowNum}
-		]]>
+				ORDER BY comu_num DESC
+			) result1
+		)
+		WHERE rcomu_num <![CDATA[>=]]> #{startRowNum} AND rcomu_num <![CDATA[<=]]> #{endRowNum}
 	</select>
 	
 	<select id="getCount" parameterType="cafeDto" resultType="int">
@@ -37,52 +39,81 @@
 		FROM community_board_tb
 		WHERE group_num = #{group_num}
 		<include refid="searchCondition"/>
-	</select>		
-
+	</select>
 	<insert id="insert" parameterType="cafeDto">
-		INSERT INTO community_board_tb
-		(comu_num,writer,title, header, content, viewCount, regdate, group_num)
-		VALUES(comu_seq.NEXTVAL, #{writer}, #{title}, #{header},
+		INSERT INTO community_board_tb (
+			  comu_num
+			, writer
+			, title
+			, header
+			, content
+			, viewCount
+			, regdate
+			, group_num
+		) VALUES (
+			comu_seq.NEXTVAL, #{writer}, #{title}, #{header},
 			#{content}, #{viewCount}, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD'), #{group_num})
 	</insert>
-	
 	<select id="getData" parameterType="cafeDto" resultType="cafeDto">
 		SELECT result1.*
-		FROM
-			(SELECT comu_num, writer, title, content, viewCount, group_num, TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate, 
-			   LAG(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) nextNum,
-	   		   LEAD(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) prevNum
-			 FROM community_board_tb
-			 WHERE group_num = #{group_num}) result1
+		FROM (
+			SELECT
+				  comu_num
+				, writer
+				, title
+				, content
+				, viewCount
+				, group_num
+				, TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate
+				, LAG(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) nextNum
+				, LEAD(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) prevNum
+		 	FROM community_board_tb
+		 	WHERE group_num = #{group_num}
+		) result1
 		WHERE comu_num = #{comu_num}
 	</select>
 	
 	<select id="getData2" parameterType="cafeDto" resultType="cafeDto">
 		SELECT result1.*
-		FROM
-			(SELECT comu_num, writer, title, content, viewCount, group_num, TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate,
-			   LAG(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) nextNum,
-	   		   LEAD(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) prevNum
-			 FROM community_board_tb
-			 <include refid="searchCondition"/>
-			 ) result1
-		WHERE comu_num=#{comu_num}
+		FROM (
+			SELECT
+				  comu_num
+				, writer
+				, title
+				, content
+				, viewCount
+				, group_num
+				, TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate
+				, LAG(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) nextNum
+				, LEAD(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) prevNum
+			FROM community_board_tb
+			<include refid="searchCondition"/>
+		) result1
+		WHERE comu_num = #{comu_num}
 	</select>
 	
 	<select id="getData3" parameterType="int" resultType="cafeDto">
 		SELECT result1.*
-		FROM
-			(SELECT comu_num, writer, title, content, viewCount, group_num, TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate, 
-			   LAG(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) nextNum,
-	   		   LEAD(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) prevNum
-			 FROM community_board_tb) result1
+		FROM (
+			SELECT
+				comu_num
+				, writer
+				, title
+				, content
+				, viewCount
+				, group_num
+				, TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate
+				, LAG(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) nextNum
+				, LEAD(comu_num, 1, 0) OVER (ORDER BY comu_num DESC) prevNum
+			FROM community_board_tb
+		) result1
 		WHERE comu_num = #{comu_num}
 	</select>
 	
 	<update id="addViewCount" parameterType="int">
 		UPDATE community_board_tb
-		SET viewCount=viewCount+1
-		WHERE comu_num=#{comu_num}
+		SET viewCount = viewCount + 1
+		WHERE comu_num = #{comu_num}
 	</update>
 	
 	<delete id="delete" parameterType="int">
@@ -92,7 +123,9 @@
 	
 	<update id="update" parameterType="cafeDto">
 		UPDATE community_board_tb
-		SET title=#{title}, content=#{content}
+		SET
+		    title=#{title}
+		  , content=#{content}
 		WHERE comu_num=#{comu_num}
 	</update>	
 </mapper>

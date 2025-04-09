@@ -4,31 +4,71 @@
 
 	<!-- 아이디 중복체크 -->
     <select id="isExist" parameterType="string" resultType="int">
-        SELECT COUNT(*) FROM users_tb WHERE user_id = #{id}
+        SELECT COUNT(*)
+        FROM users_tb
+        WHERE user_id = #{id}
     </select>
     
     <!-- 닉네임 중복체크 -->
     <select id="isExist2" parameterType="string" resultType="int">
-        SELECT COUNT(*) FROM users_tb WHERE name = #{name}
+        SELECT COUNT(*)
+        FROM users_tb
+        WHERE name = #{name}
     </select>
 
 	<insert id="insert" parameterType="usersDto">
 		INSERT INTO users_tb (
-			user_id, pwd, email, regdate, name, SVC_USE_PCY_AGMT_YN, PS_INFO_PROC_AGMT_YN, MKT_INFO_RECV_AGMT_YN, social
+			  user_id
+			, pwd
+			, email
+			, regdate
+			, name
+			, SVC_USE_PCY_AGMT_YN
+			, PS_INFO_PROC_AGMT_YN
+			, MKT_INFO_RECV_AGMT_YN
+			, social
 		)
 		VALUES (
-			#{id}, #{pwd}, #{email}, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD'), #{name}, 0, 0, 0, #{social}
+			 #{id}
+		   , #{pwd}
+		   , #{email}
+		   , TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+		   , #{name}
+		   , 0
+		   , 0
+		   , 0
+		   , #{social}
 		)
 	</insert>
 	
 	<select id="getData" parameterType="string" resultType="usersDto">
-		SELECT user_id, pwd, profile, email, regdate, Name, SVC_USE_PCY_AGMT_YN, PS_INFO_PROC_AGMT_YN, MKT_INFO_RECV_AGMT_YN, social
+		SELECT
+		      user_id
+			, pwd
+			, profile
+			, email
+			, regdate
+			, Name
+			, SVC_USE_PCY_AGMT_YN
+			, PS_INFO_PROC_AGMT_YN
+			, MKT_INFO_RECV_AGMT_YN
+			, social
 		FROM users_tb
 		WHERE user_id = #{id}
 	</select>
 	<!-- 네이버 인증 위해서 email로 유저 정보 습득 -->
 	<select id="getNaver" parameterType="string" resultType="usersDto">
-		SELECT user_id, pwd, profile, email, regdate, Name, SVC_USE_PCY_AGMT_YN, PS_INFO_PROC_AGMT_YN, MKT_INFO_RECV_AGMT_YN, social
+		SELECT
+		      user_id
+			, pwd
+			, profile
+			, email
+			, regdate
+			, Name
+			, SVC_USE_PCY_AGMT_YN
+			, PS_INFO_PROC_AGMT_YN
+			, MKT_INFO_RECV_AGMT_YN
+			, social
 		FROM users_tb
 		WHERE email = #{email}
 	</select>
@@ -47,15 +87,23 @@
 	
 	<update id="update" parameterType="usersDto">
 		UPDATE users_tb
-		SET email = #{email}, profile= #{profile}
+		SET
+		    email = #{email}
+		  , profile= #{profile}
 		WHERE user_id = #{id}
 	</update>
 	
 	<delete id="delete" parameterType="string">
-		DELETE FROM users_tb WHERE user_id = #{id}
+		DELETE FROM users_tb
+		WHERE user_id = #{id}
 	</delete>
 	
 	<select id="getId" parameterType="string" resultType="usersDto">
-		SELECT user_id, email, social FROM users_tb WHERE name = #{name}
+		SELECT
+		      user_id
+			, email
+			, social
+		FROM users_tb
+		WHERE name = #{name}
 	</select>
 </mapper>

@@ -4,22 +4,31 @@
 <mapper namespace="jjim">
 	<!-- 찜 테이블에 두 값을 넣어준다. -->
 	<insert id="insert" parameterType="jjimDto">
-		INSERT INTO USER_BOOKMARK_TB
-		(group_Num, user_Id)
-		VALUES (#{group_Num}, #{user_Id})
+		INSERT INTO USER_BOOKMARK_TB (
+			  group_Num
+			, user_Id
+		)
+		VALUES (
+			  #{group_Num}
+			, #{user_Id}
+		)
 	</insert>
 	
 	<!-- 그룹넘버와 아이디를 조회하여 둘 다 조건이 맞는 곳 삭제(둘 중 하나만 맞으면 삭제되지 않음) -->
 	<delete id="delete" parameterType="jjimDto">
 		DELETE FROM USER_BOOKMARK_TB
-		WHERE group_Num = #{group_Num} AND user_id = #{user_Id} 
+		WHERE group_Num = #{group_Num}
+		AND user_id = #{user_Id}
 	</delete>
 	
 	<!-- dto로부터 값을 가져와서 값이 있는지 null인지 확인한다. -->
 	<select id="getData" parameterType="jjimDto" resultType="jjimDto">
-		SELECT group_Num, user_Id
+		SELECT
+		      group_Num
+			, user_Id
 		FROM USER_BOOKMARK_TB
-		WHERE group_Num = #{group_Num} AND user_Id = #{user_Id} 
+		WHERE group_Num = #{group_Num}
+		AND user_Id = #{user_Id}
 	</select>
 	
  	<select id="getCount" parameterType="int" resultType="int">
@@ -30,12 +39,21 @@
 	
 	<!--찜의 목록을 불러오기 위한 sql문.-->
 	<select id="getList" parameterType="string" resultType="groupDto">
-	    SELECT num, manager_id, name, caption, img_Path, regdate, now_people, max_people,
-	    	ended_dt, deadline_dt, start_dt
-	    FROM GROUP_TB
-	    INNER JOIN USER_BOOKMARK_TB ON group_tb.num = USER_BOOKMARK_TB.group_Num
-	    WHERE USER_BOOKMARK_TB.user_id = #{user_Id}
+	    SELECT
+	          num
+			, manager_id
+			, name
+			, caption
+			, img_Path
+			, regdate
+			, now_people
+			, max_people
+			, ended_dt
+			, deadline_dt
+			, start_dt
+	    FROM GROUP_TB GR
+	    INNER JOIN USER_BOOKMARK_TB BM ON GR.num = BM.group_Num
+	    WHERE BM.user_id = #{user_Id}
 	</select>
-	
 </mapper>
 

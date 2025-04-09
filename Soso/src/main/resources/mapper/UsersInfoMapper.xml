@@ -4,20 +4,31 @@
 <mapper namespace="info">
 
 	<select id="getWritingList" parameterType="usersInfoDto" resultType="usersInfoDto">
-		SELECT cb.comu_num AS num, cb.writer, cb.title, cb.regdate, cb.group_num, gt.name AS group_name
+		SELECT
+		      cb.comu_num AS num
+			, cb.writer
+			, cb.title
+			, cb.regdate
+			, cb.group_num
+			, gt.name AS group_name
 		FROM (
-		    SELECT result1.*, ROWNUM AS rnum
+		    SELECT
+		          result1.*
+				, ROWNUM AS rnum
 		    FROM (
-		        SELECT comu_num, writer, title, regdate, group_num
+		        SELECT
+		              comu_num
+					, writer
+					, title
+					, regdate
+					, group_num
 		        FROM community_board_tb
 		        WHERE writer = #{writer}
 		        ORDER BY comu_num DESC
 		    ) result1
 		) cb
 		LEFT JOIN group_tb gt ON cb.group_num = gt.num
-		<![CDATA[ 
-		WHERE cb.rnum >= #{startRowNum} AND cb.rnum <= #{endRowNum}
-		]]>
+		WHERE cb.rnum <![CDATA[>=]]> #{startRowNum} AND cb.rnum <![CDATA[<=]]> #{endRowNum}
 	</select>
 	
 	<select id="getWCount" parameterType="usersInfoDto" resultType="int">
@@ -28,18 +39,23 @@
 	
 	<select id="getCommentList" parameterType="usersInfoDto" resultType="usersInfoDto">
 		SELECT *
-		FROM
-		    (SELECT result1.*, ROWNUM AS rnum
-		    FROM
-		        (SELECT cc.comu_num, cc.writer, cc.content, cc.regdate, cb.group_num, cb.title
+		FROM (
+		    SELECT result1.*, ROWNUM AS rnum
+		    FROM (
+		    	SELECT
+		              cc.comu_num
+					, cc.writer
+					, cc.content
+					, cc.regdate
+					, cb.group_num
+					, cb.title
 		        FROM comu_comment_tb cc
-		        INNER JOIN community_board_tb cb
-		        ON cc.comu_num = cb.comu_num
+		        INNER JOIN community_board_tb cb ON cc.comu_num = cb.comu_num
 		        WHERE cc.writer = #{writer}
-		        ORDER BY comment_num DESC) result1)
-		<![CDATA[ 
-		WHERE rnum >= #{startRowNum} AND rnum <= #{endRowNum}
-		]]>
+		        ORDER BY comment_num DESC
+		    ) result1
+		)
+		WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
 	</select>
 	
 	<select id="getCCount" parameterType="usersInfoDto" resultType="int">
@@ -50,16 +66,20 @@
 	
 	<select id="getSupportList" parameterType="usersInfoDto" resultType="usersInfoDto">
 		SELECT *
-		FROM
-		    (SELECT result1.*, ROWNUM AS rnum
-		    FROM
-		        (SELECT cs_num, writer, regdate, title
+		FROM (
+			SELECT result1.*, ROWNUM AS rnum
+		    FROM (
+		    	SELECT
+		    	      cs_num
+					, writer
+					, regdate
+					, title
 		        FROM cs_tb
 		        WHERE writer = #{writer}
-		        ORDER BY cs_num DESC) result1)
-		<![CDATA[ 
-		WHERE rnum >= #{startRowNum} AND rnum <= #{endRowNum}
-		]]>
+		        ORDER BY cs_num DESC
+		    ) result1
+		)
+		WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
 	</select>
 	
 	<select id="getSCount" parameterType="usersInfoDto" resultType="int">
@@ -67,7 +87,4 @@
 		FROM cs_tb
 		WHERE writer = #{writer}
 	</select>
-	
-	
-
 </mapper>
