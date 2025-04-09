@@ -2,6 +2,7 @@ package com.acorn.soso;
 
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.acorn.soso.group.service.GroupService;
 
-
+@Slf4j
 @Controller
 public class HomeController {
 	@Autowired
@@ -22,6 +23,7 @@ public class HomeController {
 	
 	@GetMapping("/main")
 	public String view(HttpServletRequest request, Model model) {
+		log.info("view");
 		service.getViewList(request, model);
 		return "main";
 	}
