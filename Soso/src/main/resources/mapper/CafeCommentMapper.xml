@@ -2,22 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cafeComment">
-		<!-- 
-		댓글에 프로필 이미지도 같이 출력하기 위해 users 테이블과 join 을 한다.
-		댓글도 paging 처리가 필요함으로 select 할때 startRowNum 과 endRowNum 이 있어야 한다.
-	 -->
+<!--
+	댓글에 프로필 이미지도 같이 출력하기 위해 users 테이블과 join 을 한다.
+	댓글도 paging 처리가 필요함으로 select 할때 startRowNum 과 endRowNum 이 있어야 한다.
+-->
 	<select id="getList" parameterType="cafeCommentDto" resultType="cafeCommentDto">
 		SELECT *
-		FROM
-			(SELECT result1.*, ROWNUM AS rcomment_num
-			FROM
-				(SELECT comment_num, writer, content, target_id, comu_num,
-					comment_group, deleted, comu_comment_tb.regdate, profile
+		FROM (
+			SELECT
+			      result1.*
+				, ROWNUM AS rcomment_num
+			FROM (
+				SELECT
+				      comment_num
+					, writer
+					, content
+					, target_id
+					, comu_num
+					, comment_group
+					, deleted
+					, comu_comment_tb.regdate
+					, profile
 				FROM comu_comment_tb
-				INNER JOIN users
-				ON comu_comment_tb.writer=users.id
-				WHERE comu_num=#{comu_num}
-				ORDER BY comment_group ASC, comment_num ASC) result1)
+				INNER JOIN users ON comu_comment_tb.writer=users.id
+				WHERE comu_num = #{comu_num}
+				ORDER BY comment_group ASC, comment_num ASC
+			) result1
+		)
 		WHERE rcomment_num BETWEEN #{startRowNum} AND #{endRowNum}	
 	</select>
 	<!-- 댓글은 실제로 삭제 하지 않고 deleted 칼럼에 저장된값을 no 에서 yes 로 수정하는 작업만한다. -->
@@ -28,28 +39,48 @@
 	</update>
 	<!-- 댓글을 저장할때 댓글의 글번호도 미리 CafeCommentDto 객체에 담아 와야 한다. -->
 	<insert id="insert" parameterType="cafeCommentDto">
-		INSERT INTO comu_comment_tb
-		(comment_num, writer, content, target_id, comu_num, comment_group, regdate)
-		VALUES(#{comment_num}, #{writer}, #{content}, #{target_id}, #{comu_num},#{comment_group}, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD'))
+		INSERT INTO comu_comment_tb (
+			  comment_num
+			, writer
+			, content
+			, target_id
+			, comu_num
+			, comment_group
+			, regdate
+		) VALUES(
+			  #{comment_num}
+			, #{writer}
+			, #{content}
+			, #{target_id}
+			, #{comu_num}
+			, #{comment_group}
+			, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+		)
 	</insert>
 	<!-- 저장 예정인 댓글의 글번호를 미리 얻어내기  -->
 	<select id="getSequence" resultType="int">
-		SELECT comu_coment_seq.NEXTVAL
-		FROM DUAL
+		SELECT comu_coment_seq.NEXTVAL FROM DUAL
 	</select>
 	<update id="update" parameterType="cafeCommentDto">
 		UPDATE comu_comment_tb
-		SET content=#{content}
-		WHERE comment_num=#{comment_num}
+		SET content = #{content}
+		WHERE comment_num = #{comment_num}
 	</update>
 	<select id="getData" parameterType="int" resultType="cafeCommentDto">
-		SELECT comment_num, writer, content, comu_num, comment_group, deleted, regdate
+		SELECT
+			  comment_num
+			, writer
+			, content
+			, comu_num
+			, comment_group
+			, deleted
+			, regdate
 		FROM comu_comment_tb
-		WHERE comment_num=#{comment_num}
+		WHERE comment_num = #{comment_num}
 	</select>
 	<select id="getCount" parameterType="int" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0)
 		FROM comu_comment_tb
-		WHERE comu_num=#{comu_num}
+		WHERE comu_num = #{comu_num}
 	</select>	
 </mapper>

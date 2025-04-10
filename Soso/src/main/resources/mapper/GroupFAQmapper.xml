@@ -3,46 +3,82 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="groupFAQ">
 	<insert id="insert" parameterType="groupFAQDto">
-	    INSERT INTO GROUP_FAQ_TB
-		(group_num, num, q_writer, q_title, q_content, a_writer, regdate)
-		VALUES(#{group_num}, GROUP_FAQ_SEQ.nextval, #{q_writer}, #{q_title}, #{q_content}, #{a_writer}, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD'))
+	    INSERT INTO GROUP_FAQ_TB (
+	    	  group_num
+			, num
+			, q_writer
+			, q_title
+			, q_content
+			, a_writer
+			, regdate
+		) VALUES (
+			  #{group_num}
+			, GROUP_FAQ_SEQ.nextval
+			, #{q_writer}
+			, #{q_title}
+			, #{q_content}
+			, #{a_writer}
+			, TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+		)
 	</insert>
 	<!-- 답변 -->
 	<update id="answer" parameterType="groupFAQDto">
 	    UPDATE GROUP_FAQ_TB
-	    SET a_answer = #{a_answer},
-	        a_writer = #{a_writer},
-	        a_regdate = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+	    SET   a_answer = #{a_answer}
+	        , a_writer = #{a_writer}
+	        , a_regdate = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
 	    WHERE num = #{num}
 	</update>
 	<!-- 답변 수정 -->
 	<update id="answerUpdate" parameterType="groupFAQDto">
 		UPDATE GROUP_FAQ_TB
-		SET a_answer = #{a_answer}, a_regdate = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+		SET a_answer = #{a_answer}
+		  , a_regdate = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
 		WHERE num = #{num}
 	</update>
 	<!-- 답변 삭제 -->
 		<update id="answerDelete" parameterType="int">
 		UPDATE GROUP_FAQ_TB
-		SET a_answer = '', a_regdate = ''
+		SET a_answer = ''
+		  , a_regdate = ''
 		WHERE num = #{num}
 	</update>
 	
 	<select id="getList" parameterType="groupFAQDto" resultType="groupFAQDto">
 		SELECT *
-		FROM
-			(SELECT result1.*, ROWNUM AS rnum
-			FROM
-				(SELECT group_num, num, q_writer, q_title, q_content, regdate, a_writer, a_answer, a_regdate<!-- answer영역을 추가해준다 -->
+		FROM (
+			SELECT
+			      result1.*
+				, ROWNUM AS rnum
+			FROM (
+				SELECT
+					  group_num
+					, num
+					, q_writer
+					, q_title
+					, q_content
+					, regdate
+					, a_writer
+					, a_answer
+					, a_regdate <!-- answer영역을 추가해준다 -->
 				FROM GROUP_FAQ_TB
 				WHERE group_num = #{group_num}
-				ORDER BY num DESC) result1)
-		<![CDATA[ 
-		WHERE rnum >= #{startRowNum} AND rnum <= #{endRowNum}
-		]]>
+				ORDER BY num DESC
+			) result1
+		)
+		WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
 	</select>
 	<select id="getData" parameterType="int" resultType="groupFAQDto">
-		SELECT group_num, num, q_writer, q_title, q_content, regdate, a_writer, a_answer, a_regdate
+		SELECT
+			  group_num
+			, num
+			, q_writer
+			, q_title
+			, q_content
+			, regdate
+			, a_writer
+			, a_answer
+			, a_regdate
 		FROM GROUP_FAQ_TB
 		WHERE num = #{num}
 	</select>
@@ -53,11 +89,12 @@
 	</select>		
 	<update id="update" parameterType="groupFAQDto">
 		UPDATE GROUP_FAQ_TB
-		SET q_title = #{q_title}, q_content = #{q_content}
+		SET q_title = #{q_title}
+		  , q_content = #{q_content}
 		WHERE num = #{num}	
 	</update>
 	<delete id="delete" parameterType="int">
 		DELETE FROM GROUP_FAQ_TB
-		WHERE num = #{num}		
+		WHERE num = #{num}
 	</delete>
 </mapper>

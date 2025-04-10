@@ -4,15 +4,31 @@
 <mapper namespace="groupManaging">
 	<!-- 현재 활동 진행 중인 개설한 소모임 리스트 불러오기 -->
 	<select id="getGroupList" parameterType="String" resultType="groupDto">
-		SELECT group_tb.num AS num, name, caption, img_path, regdate, 
-			TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt, 
-			TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt,
-			TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt,
-			manager_id, max_people, now_people, avrg_rate, meeting_loc, meeting_time,
-			genre, on_off, manager_comment, viewcount, result.like_num
+		SELECT
+			group_tb.num AS num
+			, name
+			, caption
+			, img_path
+			, regdate
+			, TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt
+		    , TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt
+		    , TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt
+		    , manager_id
+			, max_people
+			, now_people
+			, avrg_rate
+			, meeting_loc
+			, meeting_time
+			, genre
+			, on_off
+			, manager_comment
+			, viewcount
+			, result.like_num
 		FROM group_tb
 		LEFT JOIN (
-    		SELECT group_tb.num, COUNT(user_bookmark_tb.group_num) AS like_num
+    		SELECT
+				  group_tb.num
+				, COUNT(user_bookmark_tb.group_num) AS like_num
     		FROM group_tb
     		LEFT JOIN user_bookmark_tb ON group_tb.num = user_bookmark_tb.group_num
     		GROUP BY group_tb.num
@@ -22,15 +38,31 @@
    	</select>
    	<!-- 현재 활동 종료된 개설한 소모임 리스트 불러오기 -->
    	<select id="getFinishedGroupList" parameterType="String" resultType="groupDto">
-		SELECT group_tb.num AS num, name, caption, img_path, regdate, 
-			TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt, 
-			TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt,
-			TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt,
-			manager_id, max_people, now_people, avrg_rate, meeting_loc, meeting_time,
-			genre, on_off, manager_comment, viewcount, result.like_num
+		SELECT
+			  group_tb.num AS num
+			, name
+			, caption
+			, img_path
+			, regdate
+			, TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt
+		    , TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt
+		    , TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt
+		    , manager_id
+			, max_people
+			, now_people
+			, avrg_rate
+			, meeting_loc
+			, meeting_time
+			, genre
+			, on_off
+			, manager_comment
+			, viewcount
+			, result.like_num
 		FROM group_tb
 		LEFT JOIN (
-			SELECT group_tb.num, COUNT(user_bookmark_tb.group_num) AS like_num
+			SELECT
+			      group_tb.num
+				, COUNT(user_bookmark_tb.group_num) AS like_num
 			FROM group_tb
 			LEFT JOIN user_bookmark_tb ON group_tb.num = user_bookmark_tb.group_num
 			GROUP BY group_tb.num
@@ -40,15 +72,31 @@
 	</select>
 	<!-- 모든 개설 소모임 리스트 불러오기 -->
 	<select id="getAllGroupList" parameterType="String" resultType="groupDto">
-		SELECT group_tb.num AS num, name, caption, img_path, regdate, 
-			TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt, 
-			TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt,
-			TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt,
-			manager_id, max_people, now_people, avrg_rate, meeting_loc, meeting_time,
-			genre, on_off, manager_comment, viewcount, result.like_num
+		SELECT
+		      group_tb.num AS num
+			, name
+			, caption
+			, img_path
+			, regdate
+			, TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt
+			, TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt
+			, TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt
+			, manager_id
+			, max_people
+			, now_people
+			, avrg_rate
+			, meeting_loc
+			, meeting_time
+			, genre
+			, on_off
+			, manager_comment
+			, viewcount
+			, result.like_num
 		FROM group_tb
 		LEFT JOIN (
-			SELECT group_tb.num, COUNT(user_bookmark_tb.group_num) AS like_num
+			SELECT
+			      group_tb.num
+			    , COUNT(user_bookmark_tb.group_num) AS like_num
 			FROM group_tb
 			LEFT JOIN user_bookmark_tb ON group_tb.num = user_bookmark_tb.group_num
 			GROUP BY group_tb.num
@@ -58,65 +106,125 @@
 	</select>
 	<!-- 현재 활동 진행 중인 가입한 소모임 리스트 불러오기 -->
    	<select id="getGroupList2" parameterType="String" resultType="groupDto">
-	    SELECT group_tb.num as num, name, caption, img_path, 
-			   manager_id, now_people, meeting_loc, meeting_time, 
-			   TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt, 
-			   TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt,
-			   TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt,
-			   group_join_tb.user_id
+	    SELECT
+			  group_tb.num as num
+			, name
+			, caption
+			, img_path
+			, manager_id
+			, now_people
+			, meeting_loc
+			, meeting_time
+			, TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt
+			, TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt
+			, TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt
+			, group_join_tb.user_id
 	    FROM group_tb
 	    INNER JOIN group_join_tb ON group_tb.num = group_join_tb.group_num
-	    WHERE group_join_tb.user_id = #{user_id} AND isJoin = 0 AND ended_dt &gt; SYSDATE
+	    WHERE 1 = 1
+		AND group_join_tb.user_id = #{user_id}
+	    AND isJoin = 0
+	    AND ended_dt &gt; SYSDATE
    	</select>
    	<!-- 현재 활동이 종료된 가입한 소모임 리스트 불러오기 -->
    	<select id="getFinishedGroupList2" parameterType="String" resultType="groupDto">
-	    SELECT group_tb.num as num, name, caption, img_path, 
-			   manager_id, now_people, meeting_loc, meeting_time, 
-			   TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt, 
-			   TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt,
-			   TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt,
-			   group_join_tb.user_id
+	    SELECT
+			  group_tb.num as num
+			, name
+			, caption
+			, img_path
+			, manager_id
+			, now_people
+			, meeting_loc
+			, meeting_time
+			, TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt
+			, TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt
+			, TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt
+			, group_join_tb.user_id
 	    FROM group_tb
 	    INNER JOIN group_join_tb ON group_tb.num = group_join_tb.group_num
-	    WHERE group_join_tb.user_id = #{user_id} AND isJoin = 0 AND ended_dt &lt; SYSDATE
+	    WHERE 1 = 1
+		AND group_join_tb.user_id = #{user_id}
+	    AND isJoin = 0
+	    AND ended_dt &lt; SYSDATE
    	</select>
    	<!-- 모든 가입한 소모임 리스트 불러오기 -->
    	<select id="getAllGroupList2" parameterType="String" resultType="groupDto">
-	    SELECT group_tb.num as num, name, caption, img_path, 
-			   manager_id, now_people, meeting_loc, meeting_time, 
-			   TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt, 
-			   TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt,
-			   TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt,
-			   group_join_tb.user_id
+	    SELECT
+			group_tb.num as num
+			, name
+			, caption
+			, img_path
+			, manager_id
+			, now_people
+			, meeting_loc
+			, meeting_time
+			, TO_CHAR(ended_dt, 'YY.MM.DD') AS ended_dt
+			, TO_CHAR(deadline_dt, 'YY.MM.DD') AS deadline_dt
+			, TO_CHAR(start_dt, 'YY.MM.DD') AS start_dt
+			, group_join_tb.user_id
 	    FROM group_tb
 	    INNER JOIN group_join_tb ON group_tb.num = group_join_tb.group_num
-	    WHERE group_join_tb.user_id = #{user_id} AND isJoin = 0
+	    WHERE 1 = 1
+		AND group_join_tb.user_id = #{user_id}
+	    AND isJoin = 0
    	</select>
    	
    	<!-- 소모임 커뮤니티에서 소모임에 가입된 인원 리스트 불러오기 -->
 	<select id="getMateList" parameterType="int" resultType="groupManagingDto">
-	    SELECT group_tb.img_path, group_join_tb.user_id, group_join_tb.group_num, users.id, profile
+	    SELECT
+			  group_tb.img_path
+			, group_join_tb.user_id
+			, group_join_tb.group_num
+			, users.id
+			, profile
 	    FROM group_tb
 	    JOIN group_join_tb ON group_tb.num = group_join_tb.group_num
 	    JOIN users ON group_join_tb.user_id = users.id
-	    WHERE group_tb.num = #{group_num} AND group_join_tb.isJoin = 0
+	    WHERE 1 = 1
+	    AND group_tb.num = #{group_num}
+	    AND group_join_tb.isJoin = 0
 	</select>
 	
    	<!-- 특정 번호에 해당하는 소모임 정보 불러오기 -->
    	<select id="getGroupData" parameterType="int" resultType="groupDto">
-		SELECT num, name, caption, img_path, regdate, ended_dt, deadline_dt, start_dt,
-			manager_id, max_people, now_people, avrg_rate, meeting_loc, meeting_time,
-			genre, on_off, manager_comment, viewcount
+		SELECT
+			  num
+			, name
+			, caption
+			, img_path
+			, regdate
+			, ended_dt
+			, deadline_dt
+			, start_dt
+			, manager_id
+			, max_people
+			, now_people
+			, avrg_rate
+			, meeting_loc
+			, meeting_time
+			, genre
+			, on_off
+			, manager_comment
+			, viewcount
       	FROM group_tb
       	WHERE num = #{num}
    	</select>
    	<!-- 특정 번호에 해당하는 소모임 정보 업데이트 하기 -->
    	<update id="updateGroupData" parameterType="groupDto">
    		UPDATE group_tb
-   		SET name = #{name}, caption = #{caption}, img_path = #{img_path}, ended_dt = TO_DATE(#{ended_dt}, 'RR/MM/DD'),
-   			deadline_dt = TO_DATE(#{deadline_dt}, 'RR/MM/DD'), start_dt = TO_DATE(#{start_dt}, 'RR/MM/DD'), max_people = #{max_people},
-   			meeting_loc = #{meeting_loc}, meeting_time = #{meeting_time}, genre = #{genre},
-   			on_off = #{on_off}, manager_comment = #{manager_comment}
+   		SET   name = #{name}
+			, caption = #{caption}
+			, img_path = #{img_path}
+			, ended_dt = TO_DATE(#{ended_dt}, 'RR/MM/DD')
+			, deadline_dt = TO_DATE(#{deadline_dt}, 'RR/MM/DD')
+			, start_dt = TO_DATE(#{start_dt}, 'RR/MM/DD')
+			, max_people = #{max_people}
+			, meeting_loc = #{meeting_loc}
+			, meeting_time = #{meeting_time}
+			, genre = #{genre}
+			, on_off = #{on_off}
+			, manager_comment = #{manager_comment}
    		WHERE num = #{num}
    	</update>
    	<!-- 특정 번호에 해당하는 소모임 해산하기 -->
@@ -127,14 +235,20 @@
    	<!-- 소모임 관리 페이지에서 현재 소모임에 가입된 인원 리스트 불러오기 -->
 	<select id="getMemberList" parameterType="int" resultType="groupManagingDto">
 		SELECT *
-		FROM   
-		   (SELECT result1.*, ROWNUM as rnum
-		   FROM
-		      (SELECT group_join_tb.*, users.profile
-			   FROM group_join_tb
-			   JOIN users ON group_join_tb.user_id = users.id
-		      WHERE group_num = #{group_num} AND isJoin = 0
-		      ORDER BY num DESC) result1)
+		FROM (
+			SELECT
+			      result1.*
+				, ROWNUM as rnum
+		   	FROM (
+		   		SELECT
+		   		      group_join_tb.*
+					, users.profile
+			   	FROM group_join_tb
+			   	JOIN users ON group_join_tb.user_id = users.id
+		      	WHERE group_num = #{group_num} AND isJoin = 0
+		      	ORDER BY num DESC
+		    ) result1
+		)
    	</select>
    	<!-- 소모임 관리 페이지에서 현재 소모임에 가입된 인원 리스트 불러오기 -->
 	<select id="getMemberData" parameterType="int" resultType="groupManagingDto">
@@ -158,26 +272,34 @@
    	<!-- 소모임 관리 페이지에서 현재 소모임에 가입 신청한 인원 리스트 불러오기 -->
 	<select id="getApplicantList" parameterType="int" resultType="groupManagingDto">
 		SELECT *
-		FROM   
-		   (SELECT result1.*, ROWNUM as rnum
-		   FROM
-		      (SELECT group_join_tb.*, users.profile
-			   FROM group_join_tb
-			   JOIN users ON group_join_tb.user_id = users.id
-		      WHERE group_num = #{group_num} AND isJoin = 1
-		      ORDER BY num DESC) result1)
+		FROM (
+			SELECT
+			      result1.*
+			    , ROWNUM as rnum
+		  	FROM (
+		  		SELECT group_join_tb.*, users.profile
+			   	FROM group_join_tb
+			   	JOIN users ON group_join_tb.user_id = users.id
+		     	WHERE group_num = #{group_num} AND isJoin = 1
+		      	ORDER BY num DESC
+		    ) result1
+		)
    	</select>
    	<!-- 소모임 관리 페이지에서 현재 소모임에서 가입 신청이 거절된 인원 리스트 불러오기 -->
    	<select id="getRejectedApplicantList" parameterType="int" resultType="groupManagingDto">
 		SELECT *
-		FROM   
-		   (SELECT result1.*, ROWNUM as rnum
-		   FROM
-		      (SELECT group_join_tb.*, users.profile
-			   FROM group_join_tb
-			   JOIN users ON group_join_tb.user_id = users.id
-		      WHERE group_num = #{group_num} AND isJoin = 2
-		      ORDER BY num DESC) result1)
+		FROM (
+			SELECT
+			      result1.*
+				, ROWNUM as rnum
+		   	FROM (
+		   		SELECT group_join_tb.*, users.profile
+			   	FROM group_join_tb
+			   	JOIN users ON group_join_tb.user_id = users.id
+		      	WHERE group_num = #{group_num} AND isJoin = 2
+		      	ORDER BY num DESC
+		    ) result1
+		)
    	</select>
    	<!-- 현재 소모임에 가입된 숫자 불러오기 -->
    	<select id="getMemberCount" parameterType="int" resultType="int">
@@ -194,13 +316,15 @@
    	<!-- 소모임 가입 신청 승인하기 -->
    	<update id="joinApprove" parameterType="int">
    		UPDATE group_join_tb
-   		SET isJoin = 0, join_dt = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+   		SET isJoin = 0
+   		  , join_dt = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
    		WHERE num = #{num}
    	</update>
    	<!-- 소모임 가입 회원 추방하기 -->
    	<update id="kick" parameterType="int">
    		UPDATE group_join_tb
-   		SET isJoin = 4, kick_dt = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
+   		SET isJoin = 4
+   		  , kick_dt = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
    		WHERE num = #{group_num}
    	</update>
    	<!-- 소모임 가입 거절 -->
