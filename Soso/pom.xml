@@ -11,7 +11,8 @@
 	<groupId>com.example</groupId>
 	<artifactId>Soso</artifactId>
 	<version>1.0.0</version>
-	<packaging>war</packaging>
+<!--	<packaging>war</packaging>-->
+	<packaging>jar</packaging>
 	<name>Bookmate</name>
 	<description>Acorn project with Spring Boot</description>
 	<properties>
