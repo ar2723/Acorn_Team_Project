@@ -12,7 +12,7 @@
 	<artifactId>Soso</artifactId>
 	<version>1.0.0</version>
 <!--	<packaging>war</packaging>-->
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>Bookmate</name>
 	<description>Acorn project with Spring Boot</description>
 	<properties>
