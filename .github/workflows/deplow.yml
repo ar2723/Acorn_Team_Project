@@ -53,5 +53,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script:
+            # 기존 프로세스 종료
             fuser -k 9000/tcp || true
-            nohup java -jar ~/app/*.jar --spring.profiles.active=real > ~/app/app.log 2>&1 &
+            rm -f ~/app/*.war.old || true
+            [ -f ~/app/Soso-1.0.0.war ] && mv ~/app/Soso-1.0.0.war ~/app/Soso-1.0.0.war.old || true
+            nohup java -jar ~/app/Soso-1.0.0.war --spring.profiles.active=real > ~/app/app.log 2>&1 &
