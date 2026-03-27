@@ -34,7 +34,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: "Soso/target/*.jar"
+          source: "**/target/*.jar"
           target: "~/app"
           strip_components: 2
 
