@@ -26,12 +26,6 @@ jobs:
         run: ./mvnw clean package -DskipTests # 테스트 제외하고 빌드
         working-directory: ./Soso
 
-      - name: Find where the war is
-        run: find . -name "*.war" # 현재 폴더 전체에서 .jar 파일을 검색해서 경로를 출력
-
-      - name: Check build artifact
-        run: ls -R Soso/target/*.war
-
       # 빌드된 Jar 파일을 미니 PC로 전송
       - name: Copy Jar to Server
         uses: appleboy/scp-action@master
@@ -54,7 +48,4 @@ jobs:
           port: 22
           script:
             fuser -k 9000/tcp || true
-            rm -f ~/app/*.war.old || true
-            [ -f ~/app/Soso-1.0.0.war ] && mv ~/app/Soso-1.0.0.war ~/app/Soso-1.0.0.war.old || true
-            mv ~/app/recent_soso.war ~/app/Soso-1.0.0.war
-            nohup java -jar ~/app/Soso-1.0.0.war --spring.profiles.active=real > ~/app/app.log 2>&1 &
+            nohup java -jar ~/app/*.war --spring.profiles.active=real > ~/app/app.log 2>&1 &
