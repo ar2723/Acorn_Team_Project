@@ -2,7 +2,7 @@ name: Bookmate CI/CD Practice
 
 on:
   push:
-    branches: [ "main" ] # main 브랜치에 푸시될 때 작동
+    branches: [ "master" ] # main 브랜치에 푸시될 때 작동
 
 jobs:
   build-and-deploy:
