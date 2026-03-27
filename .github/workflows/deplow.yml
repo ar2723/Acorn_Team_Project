@@ -26,6 +26,9 @@ jobs:
         run: ./mvnw clean package -DskipTests # 테스트 제외하고 빌드
         working-directory: ./Soso
 
+      - name: Check build artifact
+        run: ls -R Soso/target/*.jar
+
       # 빌드된 Jar 파일을 미니 PC로 전송
       - name: Copy Jar to Server
         uses: appleboy/scp-action@master
