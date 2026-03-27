@@ -44,10 +44,8 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
           script:
-            # 기존 자바 프로세스 종료
             fuser -k 9000/tcp || true
-            # 새 버전 실행 (로그는 app.log에 기록)
             nohup java -jar ~/app/*.jar --spring.profiles.active=real > ~/app/app.log 2>&1 &
