@@ -34,9 +34,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: "target/*.jar"
+          source: "Soso/target/*.jar"
           target: "~/app"
-          strip_components: 1
+          strip_components: 2
 
       # 미니 PC에서 배포 스크립트 실행
       - name: Execute Remote SSH commands
