@@ -40,7 +40,7 @@
 	<insert id="insert" parameterType="cafeCommentDto">
 		INSERT INTO comu_comment_tb (
 			  comment_num
-			, writer
+			, USER_ID
 			, content
 			, target_id
 			, comu_num
@@ -68,7 +68,7 @@
 	<select id="getData" parameterType="int" resultType="cafeCommentDto">
 		SELECT
 			  comment_num
-			, writer
+			, USER_ID
 			, content
 			, comu_num
 			, comment_group
