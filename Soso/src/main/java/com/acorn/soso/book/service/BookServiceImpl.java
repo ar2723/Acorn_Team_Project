@@ -1,4 +1,4 @@
-package com.acorn.soso.test.service;
+package com.acorn.soso.book.service;
 
 
 import java.net.URI;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.acorn.soso.test.dao.BookDao;
-import com.acorn.soso.test.dto.BookDto;
-import com.acorn.soso.test.dto.NaverResultDto;
+import com.acorn.soso.book.dao.BookDao;
+import com.acorn.soso.book.dto.BookDto;
+import com.acorn.soso.book.dto.NaverResultDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

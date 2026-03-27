@@ -1,10 +1,8 @@
-package com.acorn.soso.test.dao;
+package com.acorn.soso.book.dao;
 
 import java.util.List;
 
-import org.springframework.ui.Model;
-
-import com.acorn.soso.test.dto.BookDto;
+import com.acorn.soso.book.dto.BookDto;
 
 public interface BookDao {
 	public void saveBook(BookDto dto);

@@ -1,4 +1,4 @@
-package com.acorn.soso.test.dto;
+package com.acorn.soso.book.dto;
 
 import org.apache.ibatis.type.Alias;
 

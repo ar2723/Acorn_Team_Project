@@ -6,12 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.acorn.soso.group.dto.GroupDto;
 import com.acorn.soso.group.dto.GroupFAQDto;
 import com.acorn.soso.group.dto.GroupReviewDto;
-import com.acorn.soso.test.dto.BookDto;
+import com.acorn.soso.book.dto.BookDto;
 
 
 public interface GroupService {

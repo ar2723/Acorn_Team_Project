@@ -1,4 +1,4 @@
-package com.acorn.soso.test.dao;
+package com.acorn.soso.book.dao;
 
 import java.util.List;
 
@@ -6,11 +6,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.acorn.soso.test.dto.BookDto;
+import com.acorn.soso.book.dto.BookDto;
 @Repository
 public class BookDaoImpl implements BookDao{
 
-	
 	@Autowired
 	private SqlSession session;
 	

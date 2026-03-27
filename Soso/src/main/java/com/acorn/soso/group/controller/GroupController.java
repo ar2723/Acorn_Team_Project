@@ -25,8 +25,8 @@ import com.acorn.soso.group.dto.GroupFAQDto;
 import com.acorn.soso.group.dto.GroupReviewDto;
 import com.acorn.soso.group.service.GroupService;
 import com.acorn.soso.group_managing.service.GroupManagingService;
-import com.acorn.soso.test.dto.BookDto;
-import com.acorn.soso.test.service.BookService;
+import com.acorn.soso.book.dto.BookDto;
+import com.acorn.soso.book.service.BookService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

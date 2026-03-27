@@ -1,4 +1,4 @@
-package com.acorn.soso.test.controller;
+package com.acorn.soso.book.controller;
 
 import java.util.List;
 
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.acorn.soso.test.dto.BookDto;
-import com.acorn.soso.test.service.BookService;
+import com.acorn.soso.book.dto.BookDto;
+import com.acorn.soso.book.service.BookService;
 
 @Controller
 public class BookController {

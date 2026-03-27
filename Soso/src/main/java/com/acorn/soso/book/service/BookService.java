@@ -1,4 +1,4 @@
-package com.acorn.soso.test.service;
+package com.acorn.soso.book.service;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.acorn.soso.test.dto.BookDto;
+import com.acorn.soso.book.dto.BookDto;
 
 public interface BookService {
 

@@ -27,8 +27,8 @@ import com.acorn.soso.group.dto.GroupJoinDto;
 import com.acorn.soso.group.dto.GroupReviewDto;
 import com.acorn.soso.group.dto.JjimDto;
 import com.acorn.soso.group_managing.dao.GroupManagingDao;
-import com.acorn.soso.test.dao.BookDao;
-import com.acorn.soso.test.dto.BookDto;
+import com.acorn.soso.book.dao.BookDao;
+import com.acorn.soso.book.dto.BookDto;
 
 
 @Service
