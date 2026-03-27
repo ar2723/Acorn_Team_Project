@@ -26,6 +26,9 @@ jobs:
         run: ./mvnw clean package -DskipTests # 테스트 제외하고 빌드
         working-directory: ./Soso
 
+      - name: Find where the jar is
+        run: find . -name "*.jar" # 현재 폴더 전체에서 .jar 파일을 검색해서 경로를 출력
+
       - name: Check build artifact
         run: ls -R Soso/target/*.jar
 
