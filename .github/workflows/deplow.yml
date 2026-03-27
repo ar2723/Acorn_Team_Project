@@ -41,7 +41,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           source: "Soso/target/*.war"
-          target: "~/app"
+          target: "~/app/recent_soso.war"
           strip_components: 2
 
       # 미니 PC에서 배포 스크립트 실행
@@ -55,6 +55,10 @@ jobs:
           script:
             # 기존 프로세스 종료
             fuser -k 9000/tcp || true
+            
+            # 기존에 돌던 진짜 파일(Soso-1.0.0.war)을 .old로 백업
             rm -f ~/app/*.war.old || true
             [ -f ~/app/Soso-1.0.0.war ] && mv ~/app/Soso-1.0.0.war ~/app/Soso-1.0.0.war.old || true
+            
+            mv ~/app/recent_soso.war ~/app/Soso-1.0.0.war
             nohup java -jar ~/app/Soso-1.0.0.war --spring.profiles.active=real > ~/app/app.log 2>&1 &
