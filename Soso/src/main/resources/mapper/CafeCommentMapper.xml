@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cafeComment">
 <!--
-	댓글에 프로필 이미지도 같이 출력하기 위해 users 테이블과 join 을 한다.
+	댓글에 프로필 이미지도 같이 출력하기 위해 USERS_TB 테이블과 join 을 한다.
 	댓글도 paging 처리가 필요함으로 select 할때 startRowNum 과 endRowNum 이 있어야 한다.
 -->
 	<select id="getList" parameterType="cafeCommentDto" resultType="cafeCommentDto">
@@ -15,7 +15,6 @@
 			FROM (
 				SELECT
 				      comment_num
-					, writer
 					, content
 					, target_id
 					, comu_num
@@ -24,7 +23,7 @@
 					, comu_comment_tb.regdate
 					, profile
 				FROM comu_comment_tb
-				INNER JOIN users ON comu_comment_tb.writer=users.id
+				INNER JOIN USERS_TB ON comu_comment_tb.USER_ID=USERS_TB.USER_ID
 				WHERE comu_num = #{comu_num}
 				ORDER BY comment_group ASC, comment_num ASC
 			) result1

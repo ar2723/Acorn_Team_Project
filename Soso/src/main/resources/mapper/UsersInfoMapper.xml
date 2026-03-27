@@ -44,14 +44,14 @@
 		    FROM (
 		    	SELECT
 		              cc.comu_num
-					, cc.writer
+					, cc.USER_ID
 					, cc.content
 					, cc.regdate
 					, cb.group_num
 					, cb.title
 		        FROM comu_comment_tb cc
 		        INNER JOIN community_board_tb cb ON cc.comu_num = cb.comu_num
-		        WHERE cc.writer = #{writer}
+		        WHERE cc.USER_ID = #{writer}
 		        ORDER BY comment_num DESC
 		    ) result1
 		)
@@ -61,7 +61,7 @@
 	<select id="getCCount" parameterType="usersInfoDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0)
 		FROM comu_comment_tb
-		WHERE writer = #{writer}
+		WHERE USER_ID = #{writer}
 	</select>
 	
 	<select id="getSupportList" parameterType="usersInfoDto" resultType="usersInfoDto">
@@ -71,11 +71,11 @@
 		    FROM (
 		    	SELECT
 		    	      cs_num
-					, writer
+					, USER_ID
 					, regdate
 					, title
 		        FROM cs_tb
-		        WHERE writer = #{writer}
+		        WHERE USER_ID = #{writer}
 		        ORDER BY cs_num DESC
 		    ) result1
 		)
@@ -85,6 +85,6 @@
 	<select id="getSCount" parameterType="usersInfoDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0)
 		FROM cs_tb
-		WHERE writer = #{writer}
+		WHERE USER_ID = #{writer}
 	</select>
 </mapper>

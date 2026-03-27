@@ -4,7 +4,7 @@
 <mapper namespace="join">
 	<insert id="insert" parameterType="joinDto">
 		INSERT INTO group_join_tb (
-			  num
+			  GROUP_NUM
 			, group_Num
 			, user_Id
 			, intro
@@ -35,7 +35,7 @@
 	
 	<insert id="managerJoin" parameterType="groupDto">
 		INSERT INTO group_join_tb (
-			  num
+			  GROUP_NUM
 			, group_Num
 			, user_Id
 			, isjoin

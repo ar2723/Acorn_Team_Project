@@ -42,14 +42,14 @@
 		    FROM (
 		    	SELECT
 					  cc.comu_num
-					, cc.writer
+					, cc.USER_ID
 					, cc.content
 					, cc.regdate
 					, cb.group_num
 					, cb.title
 		        FROM comu_comment_tb cc
 		        INNER JOIN community_board_tb cb ON cc.comu_num = cb.comu_num
-		        WHERE cc.writer = #{writer}
+		        WHERE cc.USER_ID = #{writer}
 		        AND group_num = #{group_num}
 		        ORDER BY comment_num DESC
 		    ) result1
@@ -60,7 +60,7 @@
 		SELECT NVL(MAX(ROWNUM), 0)
 	 	FROM comu_comment_tb cc
      	INNER JOIN community_board_tb cb ON cc.comu_num = cb.comu_num
-        WHERE cc.writer = #{writer}
+        WHERE cc.USER_ID = #{writer}
         AND group_num = #{group_num}
 	</select>
 </mapper>

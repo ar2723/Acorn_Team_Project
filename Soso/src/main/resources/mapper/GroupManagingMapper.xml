@@ -169,23 +169,23 @@
 		AND group_join_tb.user_id = #{user_id}
 	    AND isJoin = 0
    	</select>
-   	
+
    	<!-- 소모임 커뮤니티에서 소모임에 가입된 인원 리스트 불러오기 -->
 	<select id="getMateList" parameterType="int" resultType="groupManagingDto">
 	    SELECT
 			  group_tb.img_path
 			, group_join_tb.user_id
 			, group_join_tb.group_num
-			, users.id
+			, USERS_TB.USER_ID
 			, profile
 	    FROM group_tb
 	    JOIN group_join_tb ON group_tb.num = group_join_tb.group_num
-	    JOIN users ON group_join_tb.user_id = users.id
+	    JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 	    WHERE 1 = 1
 	    AND group_tb.num = #{group_num}
 	    AND group_join_tb.isJoin = 0
 	</select>
-	
+
    	<!-- 특정 번호에 해당하는 소모임 정보 불러오기 -->
    	<select id="getGroupData" parameterType="int" resultType="groupDto">
 		SELECT
@@ -242,32 +242,33 @@
 		   	FROM (
 		   		SELECT
 		   		      group_join_tb.*
-					, users.profile
+					, USERS_TB.profile
 			   	FROM group_join_tb
-			   	JOIN users ON group_join_tb.user_id = users.id
+			   	JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 		      	WHERE group_num = #{group_num} AND isJoin = 0
-		      	ORDER BY num DESC
+		      	ORDER BY GROUP_NUM DESC
 		    ) result1
 		)
    	</select>
    	<!-- 소모임 관리 페이지에서 현재 소모임에 가입된 인원 리스트 불러오기 -->
 	<select id="getMemberData" parameterType="int" resultType="groupManagingDto">
-		SELECT group_join_tb.*, users.profile
+		SELECT group_join_tb.*, USERS_TB.profile
 		FROM group_join_tb
-		JOIN users ON group_join_tb.user_id = users.id
-      	WHERE num = #{num}
+		JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
+      	WHERE GROUP_NUM = #{num}
    	</select>
    	<!-- 소모임 관리 페이지에서 현재 소모임에서 추방된 인원 리스트 불러오기 -->
    	<select id="getKickedMemberList" parameterType="int" resultType="groupManagingDto">
 		SELECT *
-		FROM   
+		FROM
 		   (SELECT result1.*, ROWNUM as rnum
 		   FROM
-		      (SELECT group_join_tb.*, users.profile
+		      (SELECT group_join_tb.*, USERS_TB.profile
 			   FROM group_join_tb
-			   JOIN users ON group_join_tb.user_id = users.id
+			   JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 		      WHERE group_num = #{group_num} AND isJoin = 4
-		      ORDER BY num DESC) result1)
+		      ORDER BY GROUP_NUM DESC) result1
+		   )
    	</select>
    	<!-- 소모임 관리 페이지에서 현재 소모임에 가입 신청한 인원 리스트 불러오기 -->
 	<select id="getApplicantList" parameterType="int" resultType="groupManagingDto">
@@ -277,11 +278,11 @@
 			      result1.*
 			    , ROWNUM as rnum
 		  	FROM (
-		  		SELECT group_join_tb.*, users.profile
+		  		SELECT group_join_tb.*, USERS_TB.profile
 			   	FROM group_join_tb
-			   	JOIN users ON group_join_tb.user_id = users.id
+			   	JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 		     	WHERE group_num = #{group_num} AND isJoin = 1
-		      	ORDER BY num DESC
+		      	ORDER BY GROUP_NUM DESC
 		    ) result1
 		)
    	</select>
@@ -293,11 +294,11 @@
 			      result1.*
 				, ROWNUM as rnum
 		   	FROM (
-		   		SELECT group_join_tb.*, users.profile
+		   		SELECT group_join_tb.*, USERS_TB.profile
 			   	FROM group_join_tb
-			   	JOIN users ON group_join_tb.user_id = users.id
+			   	JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 		      	WHERE group_num = #{group_num} AND isJoin = 2
-		      	ORDER BY num DESC
+		      	ORDER BY group_num DESC
 		    ) result1
 		)
    	</select>
@@ -318,20 +319,20 @@
    		UPDATE group_join_tb
    		SET isJoin = 0
    		  , join_dt = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
-   		WHERE num = #{num}
+   		WHERE group_num = #{num}
    	</update>
    	<!-- 소모임 가입 회원 추방하기 -->
    	<update id="kick" parameterType="int">
    		UPDATE group_join_tb
    		SET isJoin = 4
    		  , kick_dt = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
-   		WHERE num = #{group_num}
+   		WHERE group_num = #{group_num}
    	</update>
    	<!-- 소모임 가입 거절 -->
    	<update id="reject" parameterType="int">
    		UPDATE group_join_tb
    		SET isJoin = 2
-   		WHERE num = #{num}
+   		WHERE group_num = #{num}
    	</update>
    	<!-- 소모임 탈퇴 -->
     <update id="dropOut" parameterType="groupManagingDto">

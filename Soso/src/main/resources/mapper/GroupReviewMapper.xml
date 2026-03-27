@@ -10,8 +10,7 @@
                 ROWNUM AS rnum
             FROM (
                 SELECT
-                      reivew
-                    , title
+                      title
                     , writer
                     , review
                     , ref_group
@@ -19,9 +18,9 @@
                     , group_review_tb.regdate
                     , profile
                 FROM group_review_tb
-                INNER JOIN users ON group_review_tb.writer=users.id
+                INNER JOIN USERS_TB ON group_review_tb.WRITER = USERS_TB.USER_ID
                 WHERE ref_group=#{ref_group}
-                ORDER BY group_review_tb.regdate desc, num ASC
+                ORDER BY group_review_tb.regdate desc, GROUP_NUM ASC
             ) result1
         )
         WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum}
@@ -89,10 +88,10 @@
         FROM group_review_tb
         WHERE title = #{title}
 	</select>
-		<select id="getEqual" parameterType="reviewDto" resultType="reviewDto">
-		SELECT *
-		FROM GROUP_REVIEW_TB
-		WHERE group_num = #{group_num}
-		AND writer = #{writer}
+    <select id="getEqual" parameterType="reviewDto" resultType="reviewDto">
+    SELECT *
+    FROM GROUP_REVIEW_TB
+    WHERE group_num = #{group_num}
+    AND writer = #{writer}
 	</select>
 </mapper>
