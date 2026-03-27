@@ -5,12 +5,12 @@
 	<insert id="insert" parameterType="groupFAQDto">
 	    INSERT INTO GROUP_FAQ_TB (
 	    	  group_num
-			, num
+			, Q_num
 			, q_writer
 			, q_title
 			, q_content
 			, a_writer
-			, regdate
+			, Q_regdate
 		) VALUES (
 			  #{group_num}
 			, GROUP_FAQ_SEQ.nextval
@@ -27,21 +27,21 @@
 	    SET   a_answer = #{a_answer}
 	        , a_writer = #{a_writer}
 	        , a_regdate = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
-	    WHERE num = #{num}
+	    WHERE Q_NUM = #{num}
 	</update>
 	<!-- 답변 수정 -->
 	<update id="answerUpdate" parameterType="groupFAQDto">
 		UPDATE GROUP_FAQ_TB
 		SET a_answer = #{a_answer}
 		  , a_regdate = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
-		WHERE num = #{num}
+		WHERE Q_num = #{num}
 	</update>
 	<!-- 답변 삭제 -->
 		<update id="answerDelete" parameterType="int">
 		UPDATE GROUP_FAQ_TB
 		SET a_answer = ''
 		  , a_regdate = ''
-		WHERE num = #{num}
+		WHERE Q_NUM = #{num}
 	</update>
 	
 	<select id="getList" parameterType="groupFAQDto" resultType="groupFAQDto">
@@ -53,17 +53,17 @@
 			FROM (
 				SELECT
 					  group_num
-					, num
+					, Q_num
 					, q_writer
 					, q_title
 					, q_content
-					, regdate
+					, Q_REGDATE
 					, a_writer
 					, a_answer
 					, a_regdate <!-- answer영역을 추가해준다 -->
 				FROM GROUP_FAQ_TB
 				WHERE group_num = #{group_num}
-				ORDER BY num DESC
+				ORDER BY Q_num DESC
 			) result1
 		)
 		WHERE rnum <![CDATA[>=]]> #{startRowNum} AND rnum <![CDATA[<=]]> #{endRowNum}
@@ -71,16 +71,16 @@
 	<select id="getData" parameterType="int" resultType="groupFAQDto">
 		SELECT
 			  group_num
-			, num
+			, Q_num
 			, q_writer
 			, q_title
 			, q_content
-			, regdate
+			, Q_regdate
 			, a_writer
 			, a_answer
 			, a_regdate
 		FROM GROUP_FAQ_TB
-		WHERE num = #{num}
+		WHERE Q_num = #{num}
 	</select>
 	<select id="getCount" parameterType="groupFAQDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0)
@@ -91,10 +91,10 @@
 		UPDATE GROUP_FAQ_TB
 		SET q_title = #{q_title}
 		  , q_content = #{q_content}
-		WHERE num = #{num}	
+		WHERE Q_num = #{num}
 	</update>
 	<delete id="delete" parameterType="int">
 		DELETE FROM GROUP_FAQ_TB
-		WHERE num = #{num}
+		WHERE Q_num = #{num}
 	</delete>
 </mapper>
