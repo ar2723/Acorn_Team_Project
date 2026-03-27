@@ -33,7 +33,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
+          port: 46850
           source: "Soso/target/*.war"
           target: "~/app"
           strip_components: 2
@@ -45,7 +45,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
+          port: 46850
           script:
             fuser -k 9000/tcp || true
             nohup java -jar ~/app/*.war --spring.profiles.active=real > ~/app/app.log 2>&1 &
