@@ -18,6 +18,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: chmod mvnw
+        run: chmod +x mvnw
+
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests # 테스트 제외하고 빌드
         working-directory: ./Soso
