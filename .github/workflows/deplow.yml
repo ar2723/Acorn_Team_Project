@@ -52,7 +52,7 @@ jobs:
             
             # 1. 변수 생성
             NOW=$(date +%Y%m%d_%H%M%S)
-            BACKUP_DIR="~/app/oldBack"
+            BACKUP_DIR=$HOME/app/oldBack
             
             # 2. 백업 폴더가 없으면 생성 (에러 방지)
             mkdir -p $BACKUP_DIR
