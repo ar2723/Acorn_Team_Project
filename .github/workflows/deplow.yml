@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: 46850
-          script:
+          script: |
             # 1. 현재 시간 변수 생성 (예: 20260328_123005)
             NOW=$(date +%Y%m%d_%H%M%S)
             # 2. 기존 프로세스 종료
