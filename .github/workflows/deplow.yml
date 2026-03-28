@@ -48,11 +48,11 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             # 7일이 지난 백업 파일 자동 삭제
-            find ~/app/oldback/ -name "*.back" -mtime +7 -delete
+            find ~/app/oldBack/ -name "*.back" -mtime +7 -delete
             
             # 1. 변수 생성
             NOW=$(date +%Y%m%d_%H%M%S)
-            BACKUP_DIR="~/app/oldback"
+            BACKUP_DIR="~/app/oldBack"
             
             # 2. 백업 폴더가 없으면 생성 (에러 방지)
             mkdir -p $BACKUP_DIR
