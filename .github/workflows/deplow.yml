@@ -47,5 +47,19 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 46850
           script:
+            # 1. 현재 시간 변수 생성 (예: 20260328_123005)
+            NOW=$(date +%Y%m%d_%H%M%S)
+            # 2. 기존 프로세스 종료
             fuser -k 9000/tcp || true
-            nohup java -jar ~/app/*.war --spring.profiles.active=real > ~/app/app.log 2>&1 &
+            # 3. 기존에 있던 war 파일이 있다면 시간값을 붙여서 백업
+            # (예: soso.war -> soso_20260328_123005.war.bak)
+            if [ -f ~/app/soso.war ]; then
+              mv ~/app/soso.war ~/app/soso_${NOW}.war.back
+              echo "기존 버전을 soso_${NOW}.war.back 으로 백업했습니다."
+            fi
+            # 4. 방금 SCP로 전송된 새 파일을 표준 이름(soso.war)으로 변경
+            # (Soso-1.0.0.war 같은 가변적인 이름을 soso.war로 고정)
+            mv ~/app/Soso-*.war ~/app/soso.war
+            # 5. 새 버전 실행
+            nohup java -jar ~/app/soso.war --spring.profiles.active=real > ~/app/app.log 2>&1 &
+            echo "새 버전 배포 완료 ($NOW)"
