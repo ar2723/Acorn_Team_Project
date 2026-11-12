@@ -4,22 +4,30 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.acorn.soso.security.LegacySession;
+
 @Component
 public class PwdAuthInterceptor implements HandlerInterceptor {
+
+	/** 비밀번호 재확인 후 이 시간 동안만 수정/탈퇴를 허용한다. */
+	static final long REAUTH_VALID_MILLIS = 10 * 60 * 1000L;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		boolean isValid = false;
 		
-		//비밀번호 인증페이지가 아니라면 null값을 가질것이다.
-		String isSuccess = request.getParameter("isSuccess");
-		if(isSuccess != null) {
-			isValid = isSuccess.equals("true") ? true : false;			
+		// 예전에는 ?isSuccess=true 파라미터만 보고 통과시켜서 URL 조작으로 우회할 수 있었다.
+		// 이제는 서버 세션에 기록된 재확인 시각으로 판단한다.
+		HttpSession session = request.getSession(false);
+		Object reauthAt = session == null ? null : session.getAttribute(LegacySession.PWD_REAUTH_AT);
+		if (reauthAt instanceof Long) {
+			isValid = System.currentTimeMillis() - (Long) reauthAt < REAUTH_VALID_MILLIS;
 		}
 		
 		// 만일 비밀번호 인증을 하지 않았다면 인증 페이지로 리다이렉트 이동 시키고 false 를 리턴한다.

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -94,30 +95,9 @@ public class UsersController {
 		return "main";
 	}
 	
-	@PostMapping("/users/login")
-	public String login(Model model, UsersDto dto, String url, HttpSession session){
-		/*
-		 * 서비스에서 비즈니스 로직을 처리할 때 필요로 하는 객체를 컨트롤러에서 직접 전달을 해주어야 한다.
-		 * 주로, HttpServletRequest, HttpServletResponse, HttpSession, ModelAndView
-		 * 등등의 객체이다.
-		 */
-		service.loginprocess(dto, session);
-		
-		//로그인 후에 가야할 목적지 정보를 인코딩하지 않은 것과 인코딩 한것을 모두 ModelAndView 객체에 담고
-		String encodeUrl = URLEncoder.encode(url);
-		model.addAttribute("url", url);
-		model.addAttribute("encodedUrl", encodeUrl);
-	
-		return "users/login";
-   	}
-	
-	//로그아웃 요청 처리
-	@GetMapping("/users/logout")
-	public String logout(HttpSession session) {
-		session.removeAttribute("id");
-		return "users/logout";
-	};
-	
+	// 로그인(POST /users/login)과 로그아웃(/users/logout)은 Spring Security 가 처리한다.
+	// -> com.acorn.soso.security.SecurityConfig
+
 	//개인정보 보기 요청 처리
 	@GetMapping("/users/info")
 	public String info(Model model, HttpSession session) {
@@ -133,9 +113,11 @@ public class UsersController {
 	
 	//비밀번호 수정 요청 처리
 	@PostMapping("/users/pwd_update")
-	public String pwdUpdate(UsersDto dto, Model model, HttpSession session) {
+	public String pwdUpdate(UsersDto dto, Model model, HttpSession session, HttpServletRequest request) throws ServletException {
 		//서비스에 필요한 객체의 참조값을 전달해서 비밀번호 수정 로직을 처리한다.
 		service.updateUserPwd(session, dto, model);
+		//비밀번호가 바뀌었으므로 다시 로그인하게 한다.
+		request.logout();
 		//view page로 forward 이동해서 작업 결과를 응답한다.
 		return "users/pwd_update";
 	}
@@ -179,7 +161,7 @@ public class UsersController {
 	
 	//회원 탈퇴 요청 처리
 	@GetMapping("/users/delete")
-	public String delete(HttpSession session, Model model) {
+	public String delete(HttpSession session, Model model, HttpServletRequest request) throws ServletException {
 		/*
 		 * 컨트롤러의 메소드로 전달받은 Model 객체를 서비스 객체에 전달해서
 		 * view page에 전달한 data(모델)이 담기도록 해야한다.
@@ -188,6 +170,7 @@ public class UsersController {
 		 * 따라서 forward 이동된 (응답을 위임받은) jsp 페이지에서 해당 data를 사용할 수 있는 것이다.
 		 */
 		service.deleteUser(session, model);
+		request.logout();
 		return "users/delete";
 	}
 	

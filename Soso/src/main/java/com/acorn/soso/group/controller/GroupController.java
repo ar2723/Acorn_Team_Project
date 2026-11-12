@@ -293,45 +293,17 @@ public class GroupController {
 		return "redirect:/group_managing/admin_main";
 	}
 	
-	//delete
-	@RequestMapping("/group/delete")
-	public String delete(int num) {
-		service.delete(num);
-		return "redirect:/group/list";
-	}
-	//update
-	@RequestMapping("/group/update")
-	public String update(GroupDto dto, HttpServletRequest request) {
-		service.update(dto, request);
-		return "redirect:/group/list";
-	}
-	
-	//updateform 이동
-	@RequestMapping("/group/update_form")
-	public String uploadform(HttpServletRequest request) {
-		service.getData(request);
-		return "group/update_form";
-	}
-	
-	//detail 페이지
+	// 초기 스캐폴딩이던 /group/delete, /group/update, /group/update_form, /group/upload, /group/upload_form 은
+	// 화면에서 쓰이지 않으면서 로그인·소유자 검사 없이 열려 있어 제거했다.
+	// 소모임 수정/삭제는 /group_managing/group_update, /group_managing/group_delete 가 소유자 검사 후 처리한다.
+
+//detail 페이지
 	@GetMapping("/group/detail")
 	public String detail(HttpServletRequest request, Model model) {
 		service.getDetail(request, model);		
 		return "group/detail";
 	}
 	
-	//사진 업로드 & DB 저장
-	@RequestMapping(method = RequestMethod.POST, value = "/group/upload")
-	public String upload(GroupDto dto, HttpServletRequest request) {
-		service.saveImage(dto, request);
-		return "redirect:/group/list";
-	}
-	
-	//갤러리 form 페이지 이동
-	@RequestMapping("/group/upload_form")
-	public String upload_form() {
-		return "group/upload_form";
-	}
 
 
 	//소모임 리스트 이동

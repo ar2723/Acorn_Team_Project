@@ -1,0 +1,98 @@
+package com.acorn.soso.security;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+/**
+ * 인증/인가 설정.
+ *
+ * 원칙: 기본은 로그인 필요(deny by default). 공개 페이지만 명시적으로 허용한다.
+ * 경로 매칭은 mvcMatchers 를 사용해 "/path/" 같은 변형 경로로 규칙을 우회하지 못하게 한다.
+ *
+ * TODO(Phase 1-2): 모든 폼/Ajax 에 CSRF 토큰을 넣은 뒤 csrf 를 활성화한다.
+ */
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+	/** 로그인 없이 볼 수 있는 화면 (GET) */
+	static final String[] PUBLIC_PAGES = {
+			"/", "/main",
+			// 소모임 둘러보기
+			"/group/list", "/group/ajax_list", "/group/viewList", "/group/ajax_viewList",
+			"/group/detail", "/group/group_page", "/group/faq/list", "/group/faq/paginglist",
+			// 소모임 커뮤니티 읽기
+			"/cafe/list", "/cafe/detail", "/cafe/ajax_comment_list",
+			// 고객센터 읽기
+			"/support/support_main", "/support/support_faq", "/support/support_faq_user",
+			"/support/support_faq_request", "/support/support_faq_open", "/support/support_faq_etc",
+			"/support/support_notice", "/support/support_notice_detail",
+			// 회원가입, 계정 찾기
+			"/users/loginform", "/users/signup_form", "/users/pwd_findform", "/users/id_findform",
+			// 업로드 이미지
+			"/users/images/**", "/group/images/**", "/editor/images/**",
+	};
+
+	/** 로그인 없이 호출할 수 있는 요청 (모든 메서드) */
+	static final String[] PUBLIC_ACTIONS = {
+			"/users/signup", "/users/idCheck", "/users/nameCheck", "/users/pwd_find", "/users/id_find",
+			"/group/ajax_review_list",
+			// 네이버 로그인은 보류 중인 레거시 기능이라 기존 동작을 유지한다.
+			"/users/socialaccess", "/naver/**",
+	};
+
+	/** 사이트 관리자 전용 */
+	static final String[] ADMIN_ONLY = {
+			"/support/support_notice_insertform", "/support/support_notice_insert",
+			"/support/support_notice_updateform", "/support/support_notice_update",
+			"/support/support_notice_delete",
+			"/support/support_faq_insertform", "/support/support_faq_insert",
+			"/support/support_faq_updateform", "/support/support_faq_update",
+			"/support/support_faq_delete",
+			"/support/support_inquire_inquireStatus", "/support/support_inquire_answerform",
+			"/support/support_inquire_answer",
+	};
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http,
+			LoginSuccessHandler successHandler, LoginFailureHandler failureHandler) throws Exception {
+		http
+			.csrf(csrf -> csrf.disable())
+			.authorizeHttpRequests(auth -> auth
+					.antMatchers("/resources/**", "/error").permitAll()
+					.mvcMatchers(ADMIN_ONLY).hasRole("ADMIN")
+					.mvcMatchers(HttpMethod.GET, PUBLIC_PAGES).permitAll()
+					.mvcMatchers(PUBLIC_ACTIONS).permitAll()
+					.anyRequest().authenticated())
+			.formLogin(form -> form
+					.loginPage("/users/loginform")
+					.loginProcessingUrl("/users/login")
+					.usernameParameter("id")
+					.passwordParameter("pwd")
+					.successHandler(successHandler)
+					.failureHandler(failureHandler)
+					.permitAll())
+			.logout(logout -> logout
+					.logoutUrl("/users/logout")
+					.logoutSuccessHandler((request, response, authentication) ->
+							request.getRequestDispatcher("/WEB-INF/views/users/logout.jsp").forward(request, response))
+					.invalidateHttpSession(true)
+					.deleteCookies("JSESSIONID"))
+			.exceptionHandling(ex -> ex
+					.authenticationEntryPoint(new LoginRedirectEntryPoint())
+					.accessDeniedHandler(new ForwardingAccessDeniedHandler()));
+		return http.build();
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		// 기존 회원 비밀번호는 BCrypt 로 저장되어 있다.
+		return new BCryptPasswordEncoder();
+	}
+}

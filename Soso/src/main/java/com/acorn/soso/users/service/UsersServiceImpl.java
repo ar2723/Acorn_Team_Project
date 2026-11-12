@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.acorn.soso.security.LegacySession;
 import com.acorn.soso.users.dao.UsersDao;
 import com.acorn.soso.users.dto.UsersDto;
 
@@ -79,21 +80,7 @@ public class UsersServiceImpl implements UsersService{
 		return isValid;
 	}
 
-	//로그인 처리
-	@Override
-	public void loginprocess(UsersDto dto, HttpSession session) {
-		String id = dto.getId();
-		//id가 존재하며, pwd가 동일할 때만 true
-		Boolean isValid = isExist(id) ? isSamePwd(dto) ? true : false : false;
-		
-		//만일 유효한 정보이면
-		if(isValid) {
-			//로그인 처리를 한다.
-			session.setAttribute("id", dto.getId());
-		}
-	}
-
-	//회원정보 조회
+//회원정보 조회
 	@Override
 	public void getInfo(HttpSession session, Model model) {
 		//로그인 된 아이디를 읽어온다.
@@ -127,8 +114,7 @@ public class UsersServiceImpl implements UsersService{
 			dto.setId(id);
 			//dao를 이용해서 DB에 수정반영한다.
 			dao.updatePwd(dto);
-			//로그아웃 처리
-			session.removeAttribute("id");
+			//로그아웃은 컨트롤러에서 request.logout() 으로 처리한다.
 
 
 		//로그인된 아이디도 담아준다.
@@ -186,9 +172,8 @@ public class UsersServiceImpl implements UsersService{
 		String id = (String)session.getAttribute("id");
 		//헤당 정보를 DB에서 삭제하고
 		dao.delete(id);
-		//로그아웃 처리도 한다.
-		session.removeAttribute("id");
-		//ModelAndView 객체에 탈퇴한 회원의 아이디를 담아준다.
+		//로그아웃은 컨트롤러에서 request.logout() 으로 처리한다.
+//ModelAndView 객체에 탈퇴한 회원의 아이디를 담아준다.
 		model.addAttribute("id", id);
 	}
 
@@ -200,6 +185,10 @@ public class UsersServiceImpl implements UsersService{
 		dto.setId(id); //id값을 담아서 메소드로 보냄
 		
 		Boolean isValid = isSamePwd(dto);
+		if(isValid) {
+			//PwdAuthInterceptor 가 확인하는 재확인 시각
+			session.setAttribute(LegacySession.PWD_REAUTH_AT, System.currentTimeMillis());
+		}
 		model.addAttribute("isSuccess",isValid);
 	}
 	

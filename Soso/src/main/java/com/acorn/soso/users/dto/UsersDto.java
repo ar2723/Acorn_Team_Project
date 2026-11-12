@@ -31,4 +31,5 @@ public class UsersDto {
 
 	//소셜 로그인 여부 0:북메이트, 1:통합회원, 2:네이버
 	private int social;
+	private String role; // USER, ADMIN
 }

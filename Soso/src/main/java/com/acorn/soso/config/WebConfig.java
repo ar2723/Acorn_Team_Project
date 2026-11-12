@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.acorn.soso.interceptor.GroupNumInterceptor;
-import com.acorn.soso.interceptor.LoginInterceptor;
 /*
  * [ Spring MVC 관련 설정 ]
  * 
@@ -22,8 +21,6 @@ import com.acorn.soso.interceptor.SupportInterceptor;
 @Configuration
 public class WebConfig implements WebMvcConfigurer{
 	
-	@Autowired 
-	LoginInterceptor loginInter;
 	@Autowired
 	PwdAuthInterceptor pwdAuthInter;
 	@Autowired
@@ -42,13 +39,12 @@ public class WebConfig implements WebMvcConfigurer{
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(loginInter)
-				.addPathPatterns("/users/*","/support/support_inquire")
-				.excludePathPatterns("/users/loginform", "/users/login", "/users/signup_form", "/users/signup",
-									 "/users/pwd_findform","/users/pwd_find", "/users/id_findform", "/users/id_find",
-									 "/users/idCheck", "/users/nameCheck", "/users/socialaccess");
-		registry.addInterceptor(pwdAuthInter).addPathPatterns("/users/updateform", "/users/pwd_updateform");
-		registry.addInterceptor(loginInter).addPathPatterns("/group_managing/*");
+		// 로그인 여부는 Spring Security(SecurityConfig)가 검사한다.
+		// 회원정보·비밀번호 수정, 탈퇴는 비밀번호 재확인 후에만 허용한다(화면과 실제 처리 요청 모두).
+		registry.addInterceptor(pwdAuthInter).addPathPatterns(
+				"/users/updateform", "/users/update",
+				"/users/pwd_updateform", "/users/pwd_update",
+				"/users/delete");
 		registry.addInterceptor(supportInter).addPathPatterns("/support/*");
 		registry.addInterceptor(groupNumInter).addPathPatterns("/group_managing/group_userdetail");
 	}

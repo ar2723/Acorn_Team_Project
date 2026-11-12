@@ -179,15 +179,16 @@ public class SupportController {
 		return "support/support_inquire_inquireStatus";
 	}
 	@GetMapping("/support/support_inquire_delete")
-	public String support_inquire_delete(int cs_num, Model model, HttpSession session) {
+	public String support_inquire_delete(int cs_num, Model model, HttpSession session, HttpServletRequest request) {
 		String id = (String)session.getAttribute("id");
+		boolean isAdmin = request.isUserInRole("ADMIN");
 		InquireDto dto = inquireService.getData(cs_num, model);
-		if("admin".equals(id) || (dto.getWriter() != null && dto.getWriter().equals(id))) {
+		if(isAdmin || (dto.getWriter() != null && dto.getWriter().equals(id))) {
 			inquireService.delete(cs_num, model);
 		} else{
 			throw new DontEqualException("다른 사람의 문의 내역을 삭제할 수 없습니다!");
 		}
-		if(id.equals("admin")){
+		if(isAdmin){
 			return "redirect:/support/support_inquire_inquireStatus";
 		}else {
 			return "redirect:/support/support_inquire_MyInquire";

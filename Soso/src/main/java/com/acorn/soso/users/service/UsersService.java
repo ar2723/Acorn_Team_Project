@@ -15,7 +15,6 @@ public interface UsersService {
 	public boolean isExist(String id); // id중복체크
 	public boolean isExist2(String name); // 닉네임 중복체크
 	public boolean isSamePwd(UsersDto dto); //동일한 비밀번호인지 체크
-	public void loginprocess(UsersDto dto, HttpSession session);
 	public void getInfo(HttpSession session, Model model);
 	public UsersDto getNaver(String email);
 	public void updateUserPwd(HttpSession session, UsersDto dto, Model model);

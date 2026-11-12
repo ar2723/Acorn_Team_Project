@@ -53,6 +53,7 @@
 			, PS_INFO_PROC_AGMT_YN
 			, MKT_INFO_RECV_AGMT_YN
 			, social
+			, role
 		FROM users_tb
 		WHERE user_id = #{id}
 	</select>
