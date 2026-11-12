@@ -77,8 +77,8 @@
 					<div class="row-wrap">
 						<div class="input_title">
 							<h4 class="label">질문</h4>
-							<select name="category" id="category" class="title_select">
-								<option selected="selected" class="inquire_select">분류</option>
+							<select name="category" id="category" class="title_select" required>
+								<option value="" selected="selected" disabled class="inquire_select">분류</option>
 								<option value="1">회원</option>
 								<option value="2">모임신청</option>
 								<option value="3">모임개설</option>

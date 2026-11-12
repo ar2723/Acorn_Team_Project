@@ -1,6 +1,7 @@
 package com.acorn.soso.exception;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,6 +26,14 @@ public class ExceptionController {
 		mView.addObject("exception", ide);
 		//view page ( /WEN-INF/views/error/info.jsp ) 로 forward 이동해서 예외정보 응답하기
 		mView.setViewName("group_managing/info");
+		return mView;
+	}
+
+	@ExceptionHandler(InvalidRequestException.class)
+	public ModelAndView invalidRequest(InvalidRequestException ire) {
+		ModelAndView mView = new ModelAndView("error/info");
+		mView.addObject("exception", ire);
+		mView.setStatus(HttpStatus.BAD_REQUEST);
 		return mView;
 	}
 }

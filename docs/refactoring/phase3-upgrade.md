@@ -66,6 +66,30 @@ Spring 공식 권장 경로대로 두 단계로 나눈다. 단계마다 테스�
 - 서버 Java 를 21 로 올려야 한다(서버는 Java 11). Ubuntu 20.04 기본 저장소에는 21 이 없어 Adoptium(Temurin) 저장소를 사용한다.
 - GitHub Actions `setup-java` 를 21 로 변경.
 
+## 운영 장애: FAQ 등록 후 FAQ 화면 전체 500 (2026-11-12, 3-1 배포 직후)
+
+**증상**: 관리자가 FAQ 를 등록한 뒤 고객센터 FAQ 화면이 모두 500.
+
+**원인**: 업그레이드와 무관한 기존 결함이 V1 스키마에서 드러났다.
+1. 등록 폼의 기본 옵션 `<option selected>분류</option>`에 `value`가 없어서, 분류를 고르지 않으면 글자 `'분류'`가 그대로 전송됐다.
+2. V1 은 `FAQ_TB.CATEGORY`를 VARCHAR2 로 만들었기 때문에 저장은 성공했다.
+3. 카테고리별 개수 쿼리 `WHERE category = ?`(숫자 바인딩)에서 Oracle 이 모든 행을 숫자로 변환하다 `'분류'`에서 실패했다(ORA-01722).
+   이 행이 남아 있는 동안 FAQ 화면은 계속 500 이었다.
+
+로컬 재현이 처음에 안 된 이유: 테스트 등록 때 `category=1`을 직접 넣었기 때문. 운영 로그의 ORA-01722 로 원인을 특정했다.
+
+**조치**
+| 위치 | 내용 |
+|---|---|
+| Flyway `V3__faq_category_number.sql` | `CATEGORY`를 NUMBER(1) + `CHECK (0~3)`. 숫자가 아닌 기존 값은 기타(0)로 이관 |
+| `FaqServiceImpl` | 등록/수정 시 분류가 0~3 이 아니면 `InvalidRequestException`(400, 경고 화면) |
+| `support_faq_insertform.jsp` | 기본 옵션 `value="" disabled`, `select required` |
+| `FaqCategoryTest` | 분류 누락/잘못된 값 거부, DB 제약, 정상 등록 후 개수·목록 |
+
+V3 는 운영과 같은 상황(`'분류'` 행이 있는 V2 DB)을 로컬에 만들어 적용해 보고, 행이 0 으로 바뀌고 FAQ 화면이 200 으로 돌아오는 것을 확인했다.
+
+**같이 발견한 것**: FAQ 수정 화면(`support_faq_updateform.jsp`) 파일이 없다. FAQ 수정 기능은 원래부터 동작하지 않는다. Phase 2 에서 처리.
+
 ## 3-2 예정 (Boot 4.1)
 
 - `spring-boot-starter-web` → `spring-boot-starter-webmvc` 등 모듈화된 스타터

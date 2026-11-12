@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.acorn.soso.cafe.dto.CafeDto;
+import com.acorn.soso.exception.InvalidRequestException;
 import com.acorn.soso.support.dao.FaqDao;
 import com.acorn.soso.support.dto.FaqDto;
 
@@ -198,12 +199,21 @@ public class FaqServiceImpl implements FaqService {
 	// 질문 등록
 	@Override
 	public void saveFaq(FaqDto dto) {
+		validateCategory(dto.getCategory());
 		faqDao.insert(dto);
 	}
 	// 질문 수정
 	@Override
 	public void updateFaq(FaqDto dto) {
+		validateCategory(dto.getCategory());
 		faqDao.update(dto);
+	}
+
+	/** FAQ 분류는 0(기타), 1(회원), 2(모임신청), 3(모임개설)만 허용한다. (DB 에도 CHECK 제약이 있다) */
+	private static void validateCategory(String category) {
+		if (category == null || !category.trim().matches("[0-3]")) {
+			throw new InvalidRequestException("분류를 선택해 주세요.");
+		}
 	}
 	// 질문 삭제
 	@Override
