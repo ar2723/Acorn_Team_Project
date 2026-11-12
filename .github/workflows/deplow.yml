@@ -70,6 +70,13 @@ jobs:
             # 5. SCP로 전송된 새 파일을 표준 이름(soso.war)으로 변경
             mv ~/app/Soso-*.war ~/app/soso.war
             
-            # 6. 새 버전 실행
+            # 6. 서버에만 있는 환경변수 로드 (DB_USERNAME, DB_PASSWORD 등, git 에 올리지 않음)
+            if [ -f ~/app/bookmate.env ]; then
+              set -a; . ~/app/bookmate.env; set +a
+            else
+              echo "~/app/bookmate.env 가 없습니다. DB 접속 정보가 없어 기동에 실패할 수 있습니다." >&2
+            fi
+
+            # 7. 새 버전 실행
             nohup java -jar ~/app/soso.war --spring.profiles.active=real > ~/app/app.log 2>&1 &
             echo "새 버전 배포 완료 ($NOW)"

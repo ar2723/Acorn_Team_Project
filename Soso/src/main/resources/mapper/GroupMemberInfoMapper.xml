@@ -42,7 +42,7 @@
 		    FROM (
 		    	SELECT
 					  cc.comu_num
-					, cc.USER_ID
+					, cc.USER_ID AS writer
 					, cc.content
 					, cc.regdate
 					, cb.group_num

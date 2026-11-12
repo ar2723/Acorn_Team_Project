@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,13 +30,17 @@ public class BookServiceImpl implements BookService{
 	@Autowired
 	private BookDao bookDao;
 
+	@Value("${naver.search.client-id}")
+	private String clientId;
+
+	@Value("${naver.search.client-secret}")
+	private String clientSecret;
+
 	@Override
 	public void getBookList(Model model, HttpServletRequest request) {
 		
 
 	// 네이버 검색 API 요청
-	String clientId = "QfLQRna6uXVSACAEdvdd"; 		
-    String clientSecret = "Vzssuh8MKt";
     
     //parameter로 가져온 파라메터를 읽어온
     String text = request.getParameter("search");

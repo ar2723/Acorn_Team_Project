@@ -44,7 +44,7 @@
 		    FROM (
 		    	SELECT
 		              cc.comu_num
-					, cc.USER_ID
+					, cc.USER_ID AS writer
 					, cc.content
 					, cc.regdate
 					, cb.group_num
@@ -71,11 +71,11 @@
 		    FROM (
 		    	SELECT
 		    	      cs_num
-					, USER_ID
+					, writer
 					, regdate
 					, title
 		        FROM cs_tb
-		        WHERE USER_ID = #{writer}
+		        WHERE writer = #{writer}
 		        ORDER BY cs_num DESC
 		    ) result1
 		)
@@ -85,6 +85,6 @@
 	<select id="getSCount" parameterType="usersInfoDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0)
 		FROM cs_tb
-		WHERE USER_ID = #{writer}
+		WHERE writer = #{writer}
 	</select>
 </mapper>

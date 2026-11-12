@@ -43,7 +43,7 @@
 	
 	<select id="getData" parameterType="string" resultType="usersDto">
 		SELECT
-		      user_id
+		      user_id AS id
 			, pwd
 			, profile
 			, email
@@ -59,7 +59,7 @@
 	<!-- 네이버 인증 위해서 email로 유저 정보 습득 -->
 	<select id="getNaver" parameterType="string" resultType="usersDto">
 		SELECT
-		      user_id
+		      user_id AS id
 			, pwd
 			, profile
 			, email
@@ -100,7 +100,7 @@
 	
 	<select id="getId" parameterType="string" resultType="usersDto">
 		SELECT
-		      user_id
+		      user_id AS id
 			, email
 			, social
 		FROM users_tb

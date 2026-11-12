@@ -246,7 +246,7 @@
 			   	FROM group_join_tb
 			   	JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 		      	WHERE group_num = #{group_num} AND isJoin = 0
-		      	ORDER BY GROUP_NUM DESC
+		      	ORDER BY num DESC
 		    ) result1
 		)
    	</select>
@@ -255,7 +255,7 @@
 		SELECT group_join_tb.*, USERS_TB.profile
 		FROM group_join_tb
 		JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
-      	WHERE GROUP_NUM = #{num}
+      	WHERE num = #{num}
    	</select>
    	<!-- 소모임 관리 페이지에서 현재 소모임에서 추방된 인원 리스트 불러오기 -->
    	<select id="getKickedMemberList" parameterType="int" resultType="groupManagingDto">
@@ -267,7 +267,7 @@
 			   FROM group_join_tb
 			   JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 		      WHERE group_num = #{group_num} AND isJoin = 4
-		      ORDER BY GROUP_NUM DESC) result1
+		      ORDER BY num DESC) result1
 		   )
    	</select>
    	<!-- 소모임 관리 페이지에서 현재 소모임에 가입 신청한 인원 리스트 불러오기 -->
@@ -282,7 +282,7 @@
 			   	FROM group_join_tb
 			   	JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 		     	WHERE group_num = #{group_num} AND isJoin = 1
-		      	ORDER BY GROUP_NUM DESC
+		      	ORDER BY num DESC
 		    ) result1
 		)
    	</select>
@@ -298,7 +298,7 @@
 			   	FROM group_join_tb
 			   	JOIN USERS_TB ON group_join_tb.user_id = USERS_TB.USER_ID
 		      	WHERE group_num = #{group_num} AND isJoin = 2
-		      	ORDER BY group_num DESC
+		      	ORDER BY num DESC
 		    ) result1
 		)
    	</select>
@@ -319,20 +319,20 @@
    		UPDATE group_join_tb
    		SET isJoin = 0
    		  , join_dt = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
-   		WHERE group_num = #{num}
+   		WHERE num = #{num}
    	</update>
    	<!-- 소모임 가입 회원 추방하기 -->
    	<update id="kick" parameterType="int">
    		UPDATE group_join_tb
    		SET isJoin = 4
    		  , kick_dt = TO_DATE(TO_CHAR(SYSDATE, 'RR/MM/DD'), 'RR/MM/DD')
-   		WHERE group_num = #{group_num}
+   		WHERE num = #{group_num}
    	</update>
    	<!-- 소모임 가입 거절 -->
    	<update id="reject" parameterType="int">
    		UPDATE group_join_tb
    		SET isJoin = 2
-   		WHERE group_num = #{num}
+   		WHERE num = #{num}
    	</update>
    	<!-- 소모임 탈퇴 -->
     <update id="dropOut" parameterType="groupManagingDto">

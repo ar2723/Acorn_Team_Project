@@ -10,17 +10,17 @@
                 ROWNUM AS rnum
             FROM (
                 SELECT
-                      title
+                      review_num
+                    , group_num
                     , writer
-                    , review
-                    , ref_group
+                    , content
                     , rate
                     , group_review_tb.regdate
                     , profile
                 FROM group_review_tb
                 INNER JOIN USERS_TB ON group_review_tb.WRITER = USERS_TB.USER_ID
-                WHERE ref_group=#{ref_group}
-                ORDER BY group_review_tb.regdate desc, GROUP_NUM ASC
+                WHERE group_num=#{group_num}
+                ORDER BY group_review_tb.regdate desc, review_num ASC
             ) result1
         )
         WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum}
@@ -41,7 +41,7 @@
     <select id="getCount" parameterType="int" resultType="int">
         SELECT NVL(MAX(ROWNUM), 0)
         FROM group_review_tb
-        WHERE ref_group=#{ref_group}
+        WHERE group_num=#{num}
     </select>
     <select id="getData" parameterType="int" resultType="reviewDto">
         SELECT
@@ -80,13 +80,13 @@
     </select>
     <update id="update" parameterType="reviewDto">
         UPDATE group_review_tb
-        SET review=#{review}, rate=#{rate}
-        WHERE review_num=#{num}
+        SET content=#{content}, rate=#{rate}
+        WHERE review_num=#{review_num}
     </update>
 	<select id="getAvg" parameterType="string" resultType="double">
         SELECT ROUND(AVG(rate), 2) AS average_rate
         FROM group_review_tb
-        WHERE title = #{title}
+        WHERE group_num IN (SELECT num FROM group_tb WHERE name = #{title})
 	</select>
     <select id="getEqual" parameterType="reviewDto" resultType="reviewDto">
     SELECT *

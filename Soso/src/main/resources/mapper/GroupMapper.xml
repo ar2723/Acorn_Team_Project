@@ -258,7 +258,7 @@
    	<update id="update" parameterType="groupDto">
    		UPDATE group_tb
    		SET
-   		    title = #{title}
+   		    name = #{name}
    		  , caption = #{caption}
    		  , img_path = #{img_path}
    		WHERE num = #{num}

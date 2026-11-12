@@ -1,0 +1,24 @@
+# Local development database for Bookmate
+#   docker compose up -d        # first start takes ~1-2 min (schema is created by Flyway on app start)
+#   docker compose down -v      # remove the DB including data
+services:
+  oracle:
+    image: gvenzl/oracle-xe:21-slim-faststart
+    container_name: bookmate-oracle
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:-oracle}
+      APP_USER: ${DB_USERNAME:-bookmate}
+      APP_USER_PASSWORD: ${DB_PASSWORD:-bookmate}
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+volumes:
+  oracle-data:

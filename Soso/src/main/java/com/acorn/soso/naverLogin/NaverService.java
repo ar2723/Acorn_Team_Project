@@ -5,6 +5,7 @@ import java.util.UUID;
  
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
  
@@ -22,12 +23,20 @@ public class NaverService {
 		//response_type: 인증 과정에 대한 구분값. code로 값이 고정돼 있습니다.
 		//redirect_uri: 네이버 로그인 인증의 결과를 전달받을 콜백 URL(URL 인코딩). 애플리케이션을 등록할 때 Callback URL에 설정한 정보입니다.
 		//state: 애플리케이션이 생성한 상태 토큰
-		private final static String CLIENT_ID = "Hk4gI7jYYvQGZtWrotcB";//네이버 클라이언트 아이디
-	    private final static String CLIENT_SECRET = "2qm2URDP94";//시큐리티 키
-	    private final static String REDIRECT_URI = "http://localhost:9000/naver/callback";//콜백
+		private final String CLIENT_ID;//네이버 클라이언트 아이디
+	    private final String CLIENT_SECRET;//시큐리티 키
+	    private final String REDIRECT_URI;//콜백
 	    private final static String SESSION_STATE = "oauth_state";
 	    /* 프로필 조회 API URL */
 	    private final static String PROFILE_API_URL = "https://openapi.naver.com/v1/nid/me";
+
+	    public NaverService(@Value("${naver.login.client-id}") String clientId,
+	    		@Value("${naver.login.client-secret}") String clientSecret,
+	    		@Value("${naver.login.redirect-uri}") String redirectUri) {
+	    	this.CLIENT_ID = clientId;
+	    	this.CLIENT_SECRET = clientSecret;
+	    	this.REDIRECT_URI = redirectUri;
+	    }
 	    
 	    /* 네이버 아이디로 인증  URL 생성  Method */
 	    public String getAuthorizationUrl(HttpSession session) {

@@ -440,7 +440,7 @@ public class GroupServiceImpl implements GroupService{
 	
 	     //원글의 글번호를 이용해서 해당글에 달린 댓글 목록을 얻어온다.
 	     GroupReviewDto reviewDto=new GroupReviewDto();
-//	     reviewDto.setRef_group(num);
+	     reviewDto.setGroup_num(num);
 	     //1페이지에 해당하는 startRowNum 과 endRowNum 을 dto 에 담아서  
 	     reviewDto.setStartRowNum(startRowNum);
 	     reviewDto.setEndRowNum(endRowNum);

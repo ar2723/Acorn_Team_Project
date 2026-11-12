@@ -68,7 +68,7 @@
 	<select id="getData" parameterType="int" resultType="cafeCommentDto">
 		SELECT
 			  comment_num
-			, USER_ID
+			, USER_ID AS writer
 			, content
 			, comu_num
 			, comment_group

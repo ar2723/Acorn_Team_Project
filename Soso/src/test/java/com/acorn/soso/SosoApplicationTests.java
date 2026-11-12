@@ -1,13 +1,23 @@
 package com.acorn.soso;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class SosoApplicationTests {
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.acorn.soso.support.OracleIntegrationTest;
+
+class SosoApplicationTests extends OracleIntegrationTest {
+
+	@Autowired
+	JdbcTemplate jdbc;
 
 	@Test
-	void contextLoads() {
+	void contextLoadsAndFlywayAppliesBaseline() {
+		Integer applied = jdbc.queryForObject(
+				"SELECT COUNT(*) FROM \"flyway_schema_history\" WHERE \"version\" = '1' AND \"success\" = 1",
+				Integer.class);
+		assertThat(applied).isEqualTo(1);
 	}
-
 }
