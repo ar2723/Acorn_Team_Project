@@ -2,12 +2,10 @@ package com.acorn.soso.naverLogin;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpSession;
-import javax.swing.JOptionPane;
+import jakarta.servlet.http.HttpSession;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,7 +58,7 @@ public class NaverController {
  
 	//네이버 로그인 성공시 callback호출 메소드
 	@RequestMapping(value = "naver/callback", method = { RequestMethod.GET, RequestMethod.POST })
-	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException {
+	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException {
 		
 		OAuth2AccessToken oauthToken;
         oauthToken = service.getAccessToken(session, code, state);
@@ -75,17 +73,15 @@ public class NaverController {
 		**/
 		
 		//2. String형식인 apiResult를 json형태로 바꿈
-		JSONParser parser = new JSONParser();
-		Object obj = parser.parse(apiResult);
-		JSONObject jsonObj = (JSONObject) obj;
+		JsonNode jsonObj = new ObjectMapper().readTree(apiResult);
 		
 		//3. 데이터 파싱 
 		//Top레벨 단계 _response 파싱
-		JSONObject response_obj = (JSONObject)jsonObj.get("response");
+		JsonNode response_obj = jsonObj.path("response");
 		//response의 nickname값 파싱
-		String nickname = (String)response_obj.get("nickname");
-		String email = (String)response_obj.get("email");
-		String id = (String)response_obj.get("id");
+		String nickname = response_obj.path("nickname").asText(null);
+		String email = response_obj.path("email").asText(null);
+		String id = response_obj.path("id").asText(null);
 				
 		/*
 		 * 네이버 프로필 값을 가져왔으니 회원가입이나 로그인은 쉬울 것.

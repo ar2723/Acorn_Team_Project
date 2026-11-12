@@ -50,7 +50,8 @@ class AccessRulesTest extends OracleIntegrationTest {
 	@Test
 	void adminPagesRejectNormalUsers() throws Exception {
 		mvc.perform(get(ADMIN_PAGE).with(user("reader").roles("USER"))).andExpect(status().isForbidden());
-		mvc.perform(get(ADMIN_PAGE + "/").with(user("reader").roles("USER"))).andExpect(status().isForbidden());
+		// 끝에 "/" 를 붙여 규칙을 피하려는 시도: Spring 6 부터는 MVC 핸들러에도 매칭되지 않아 404 (관리자 화면에 도달하지 못함)
+		mvc.perform(get(ADMIN_PAGE + "/").with(user("reader").roles("USER"))).andExpect(status().isNotFound());
 		mvc.perform(get("/support/support_notice_insertform").with(user("reader").roles("USER")))
 				.andExpect(status().isForbidden());
 	}

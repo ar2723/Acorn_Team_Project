@@ -3,7 +3,7 @@ package com.acorn.soso.naverLogin;
 import java.io.IOException;
 import java.util.UUID;
  
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

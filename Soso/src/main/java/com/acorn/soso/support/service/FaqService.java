@@ -1,6 +1,6 @@
 package com.acorn.soso.support.service;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.ui.Model;
 

@@ -3,7 +3,7 @@ package com.acorn.soso.security;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 레거시 코드와의 연결부.
