@@ -1,5 +1,6 @@
 package com.acorn.soso.security;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -42,7 +43,7 @@ class LoginTest extends OracleIntegrationTest {
 
 	@Test
 	void loginSucceedsAndBridgesLegacySessionId() throws Exception {
-		MvcResult result = mvc.perform(post("/users/login")
+		MvcResult result = mvc.perform(post("/users/login").with(csrf())
 						.param("id", "reader").param("pwd", "pw1234!").param("url", "/group/list?genre=-1"))
 				.andExpect(authenticated().withUsername("reader").withRoles("USER"))
 				.andExpect(forwardedUrl(LOGIN_RESULT_VIEW))
@@ -54,7 +55,7 @@ class LoginTest extends OracleIntegrationTest {
 
 	@Test
 	void wrongPasswordFails() throws Exception {
-		MvcResult result = mvc.perform(post("/users/login").param("id", "reader").param("pwd", "wrong"))
+		MvcResult result = mvc.perform(post("/users/login").with(csrf()).param("id", "reader").param("pwd", "wrong"))
 				.andExpect(unauthenticated())
 				.andExpect(forwardedUrl(LOGIN_RESULT_VIEW))
 				.andReturn();
@@ -64,14 +65,14 @@ class LoginTest extends OracleIntegrationTest {
 
 	@Test
 	void unknownUserFails() throws Exception {
-		mvc.perform(post("/users/login").param("id", "nobody").param("pwd", "pw1234!"))
+		mvc.perform(post("/users/login").with(csrf()).param("id", "nobody").param("pwd", "pw1234!"))
 				.andExpect(unauthenticated());
 	}
 
 	@Test
 	void redirectAfterLoginIsLimitedToSameSite() throws Exception {
 		for (String evil : new String[] { "//evil.example.com", "https://evil.example.com", "/\";alert(1);//" }) {
-			mvc.perform(post("/users/login").param("id", "reader").param("pwd", "pw1234!").param("url", evil))
+			mvc.perform(post("/users/login").with(csrf()).param("id", "reader").param("pwd", "pw1234!").param("url", evil))
 					.andExpect(authenticated())
 					.andExpect(request().attribute("url", "/"));
 		}
@@ -81,7 +82,7 @@ class LoginTest extends OracleIntegrationTest {
 	void adminRoleComesFromDatabase() throws Exception {
 		jdbc.update("UPDATE users_tb SET role = 'ADMIN' WHERE user_id = 'reader'");
 
-		mvc.perform(post("/users/login").param("id", "reader").param("pwd", "pw1234!"))
+		mvc.perform(post("/users/login").with(csrf()).param("id", "reader").param("pwd", "pw1234!"))
 				.andExpect(authenticated().withRoles("ADMIN"));
 	}
 
@@ -90,7 +91,7 @@ class LoginTest extends OracleIntegrationTest {
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("id", "reader");
 
-		MvcResult result = mvc.perform(get("/users/logout").session(session).with(user("reader")))
+		MvcResult result = mvc.perform(post("/users/logout").with(csrf()).session(session).with(user("reader")))
 				.andExpect(unauthenticated())
 				.andExpect(forwardedUrl("/WEB-INF/views/users/logout.jsp"))
 				.andReturn();

@@ -20,6 +20,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="${path }/resources/js/main.js"></script>
     <title>북메이트</title>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar.jsp">

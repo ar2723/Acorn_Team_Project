@@ -67,7 +67,7 @@ public class GroupManagingController {
 		return "group_managing/admin_main_all";
 	}
 	
-	@GetMapping("/group_managing/joinApprove")
+	@PostMapping("/group_managing/joinApprove")
 	public String joinApprove(int num, int group_num, String user_id, HttpServletRequest request, HttpSession session) {
 		String manager_id = (String)session.getAttribute("id");
 		GroupDto dto = service.getGroupData(group_num, request);
@@ -155,7 +155,7 @@ public class GroupManagingController {
 		return "redirect:/group_managing/admin_main";
 	}
 	
-	@GetMapping("/group_managing/group_delete")
+	@PostMapping("/group_managing/group_delete")
 	public String group_delete(int num, HttpServletRequest request, HttpSession session) {
 		String manager_id = (String)session.getAttribute("id");
 		GroupDto dto = service.getGroupData(num, request);
@@ -224,7 +224,7 @@ public class GroupManagingController {
 		return "group_managing/rejectedApplicantList";
 	}
 	
-	@GetMapping("/group_managing/kick")
+	@PostMapping("/group_managing/kick")
 	public String kick(int num, int group_num, HttpServletRequest request, HttpSession session) {
 		String manager_id = (String)session.getAttribute("id");
 		GroupDto dto = service.getGroupData(group_num, request);
@@ -235,7 +235,7 @@ public class GroupManagingController {
 		return "redirect:/group_managing/memberList?group_num=" + group_num;
 	}
 	
-	@GetMapping("/group_managing/reject")
+	@PostMapping("/group_managing/reject")
 	public String reject(int num, int group_num, HttpServletRequest request, HttpSession session) {
 		String manager_id = (String)session.getAttribute("id");
 		GroupDto dto = service.getGroupData(group_num, request);
@@ -246,7 +246,7 @@ public class GroupManagingController {
 		return "redirect:/group_managing/applicantList?group_num=" + group_num;
 	}
 	
-	@GetMapping("/group_managing/group_userdropOut") 
+	@PostMapping("/group_managing/group_userdropOut") 
 	public String dropOut(GroupManagingDto dto, HttpSession session) {  
 		String user_id = (String)session.getAttribute("id");
 		dto.setUser_id(user_id);

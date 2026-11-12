@@ -86,7 +86,7 @@ public class SupportController {
 		return "redirect:/support/support_faq";
 	}
 	//FAQ 삭제
-	@GetMapping("/support/support_faq_delete")
+	@PostMapping("/support/support_faq_delete")
 	public String support_faq_delete(int faq_num, Model model) {
 		
 		FaqDto dto = service.getData(faq_num, model);
@@ -129,7 +129,7 @@ public class SupportController {
 		return "redirect:/support/support_notice";
 	}
 	//공지사항 삭제
-	@GetMapping("/support/support_notice_delete")
+	@PostMapping("/support/support_notice_delete")
 	public String support_notice_delete(int notice_num, Model model) {
 		
 		NoticeDto dto = noticeService.getData(notice_num,model);
@@ -178,7 +178,7 @@ public class SupportController {
 		inquireService.getList2(session, model);
 		return "support/support_inquire_inquireStatus";
 	}
-	@GetMapping("/support/support_inquire_delete")
+	@PostMapping("/support/support_inquire_delete")
 	public String support_inquire_delete(int cs_num, Model model, HttpSession session, HttpServletRequest request) {
 		String id = (String)session.getAttribute("id");
 		boolean isAdmin = request.isUserInRole("ADMIN");

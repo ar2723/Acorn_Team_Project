@@ -17,6 +17,7 @@
     <script src="${path }/resources/js/common.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar.jsp">
@@ -91,8 +92,7 @@
 								      		cancelButtonText: '취소',
 							    		}).then((result) => {
 									      	if (result.isConfirmed) {
-										        location.href="${pageContext.request.contextPath}/group_managing/group_userdropOut?group_num=${tmp.num}"
-									      	}
+										        postTo("${pageContext.request.contextPath}/group_managing/group_userdropOut?group_num=${tmp.num}");}
 									    })
 									})
 							</script>

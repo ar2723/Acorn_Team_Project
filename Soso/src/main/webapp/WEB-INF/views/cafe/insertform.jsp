@@ -8,6 +8,7 @@
 <title>소모임 커뮤니티 글쓰기</title>
 <link rel="shortcut icon" type="image/x-icon" href="${path }/resources/images/main/favicon.jpg">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/group_managing/group_managing_group_insert.css">
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">

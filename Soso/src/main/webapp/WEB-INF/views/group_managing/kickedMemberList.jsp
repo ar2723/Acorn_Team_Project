@@ -12,6 +12,7 @@
 
 <style>
 </style>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">

@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
 
 /**
  * 인증/인가 설정.
@@ -15,7 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
  * 원칙: 기본은 로그인 필요(deny by default). 공개 페이지만 명시적으로 허용한다.
  * 경로 매칭은 mvcMatchers 를 사용해 "/path/" 같은 변형 경로로 규칙을 우회하지 못하게 한다.
  *
- * TODO(Phase 1-2): 모든 폼/Ajax 에 CSRF 토큰을 넣은 뒤 csrf 를 활성화한다.
+ * CSRF: 토큰을 XSRF-TOKEN 쿠키로 내려주고, resources/js/csrf.js 가 폼과 Ajax 요청에 자동으로 붙인다.
+ * 상태를 바꾸는 요청은 모두 POST 이므로 GET 링크로는 삭제·로그아웃 등을 일으킬 수 없다.
  */
 @Configuration
 @EnableWebSecurity
@@ -63,7 +66,8 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http,
 			LoginSuccessHandler successHandler, LoginFailureHandler failureHandler) throws Exception {
 		http
-			.csrf(csrf -> csrf.disable())
+			.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+			.addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
 			.authorizeHttpRequests(auth -> auth
 					.antMatchers("/resources/**", "/error").permitAll()
 					.mvcMatchers(ADMIN_ONLY).hasRole("ADMIN")

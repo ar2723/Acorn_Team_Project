@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/groupfaq.css" />
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<div class="inner-wrap">
@@ -45,7 +46,7 @@
 				                    <td style="text-align:center">${tmp.regdate}</td>
 				                    <td class="q-delete">
 				                       <c:if test="${dto.manager_id == sessionScope.id }">
-								        	<a href="${pageContext.request.contextPath}/group/faq/delete?num=${tmp.num}&group_num=${tmp.group_num}" id="delete">x</a>					        
+								        	<a data-post href="${pageContext.request.contextPath}/group/faq/delete?num=${tmp.num}&group_num=${tmp.group_num}" id="delete">x</a>					        
 								        </c:if>
 				                    </td>
 				                </tr>
@@ -56,7 +57,7 @@
 									    	<pre name="content" id="content" readonly>${tmp.q_content}</pre>
 								        	<c:if test="${ empty tmp.a_answer && sessionScope.id == tmp.q_writer}">
 									        	<a href="${pageContext.request.contextPath}/group/faq/updateform?num=${tmp.num}" id="update">수정</a>
-									        	<a href="${pageContext.request.contextPath}/group/faq/delete?num=${tmp.num}&group_num=${tmp.group_num}" onclick="return confirm('삭제하시겠습니까?')" id="delete">삭제</a>
+									        	<a data-post href="${pageContext.request.contextPath}/group/faq/delete?num=${tmp.num}&group_num=${tmp.group_num}" onclick="return confirm('삭제하시겠습니까?')" id="delete">삭제</a>
 								        	</c:if>
 										</div>
 										<div class="qna_answer">
@@ -73,7 +74,7 @@
 								        	</c:if>
 								        <c:if test="${not empty tmp.a_answer && dto.manager_id == sessionScope.id }">
 								        	<a href="${pageContext.request.contextPath}/group/answer/updateform?num=${tmp.num}" id="updateAnswer" >수정</a>
-								        	<a href="${pageContext.request.contextPath}/group/answer/delete?num=${tmp.num}&group_num=${tmp.group_num}" onclick="return confirm('삭제하시겠습니까?')" id="deleteAnswer">삭제</a>						        
+								        	<a data-post href="${pageContext.request.contextPath}/group/answer/delete?num=${tmp.num}&group_num=${tmp.group_num}" onclick="return confirm('삭제하시겠습니까?')" id="deleteAnswer">삭제</a>						        
 								        </c:if>
 								       </div>
 								    </td>

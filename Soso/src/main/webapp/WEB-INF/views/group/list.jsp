@@ -19,6 +19,7 @@
     <script src="${path }/resources/js/common.js"></script>
     <script src="${path }/resources/js/gura_util.js"></script>
 	
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar.jsp">

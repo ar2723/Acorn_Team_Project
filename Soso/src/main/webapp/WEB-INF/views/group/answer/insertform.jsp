@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>소모임 문의사항</title>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 <div class="inner-wrap">

@@ -41,7 +41,7 @@
             			<a href="${pageContext.request.contextPath}/group/jjim_list" class="mainNav">북마크</a>
             		</li>
             		<li>
-            			<a href="${pageContext.request.contextPath}/users/logout" class="mainNav">로그아웃</a>
+            			<a data-post href="${pageContext.request.contextPath}/users/logout" class="mainNav">로그아웃</a>
             		</li>
             		</c:otherwise>
             		</c:choose>   
@@ -83,7 +83,7 @@
             			<a href="${pageContext.request.contextPath}/group/jjim_list" class="mainNav">북마크</a>
             		</li>
             		<li>
-            			<a href="${pageContext.request.contextPath}/users/logout" class="mainNav">로그아웃</a>
+            			<a data-post href="${pageContext.request.contextPath}/users/logout" class="mainNav">로그아웃</a>
             		</li>
             		</c:otherwise>
             		</c:choose>           

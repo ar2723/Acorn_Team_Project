@@ -8,6 +8,7 @@
 <title>소모임 문의사항 답변 수정하기</title>
 <link rel="shortcut icon" type="image/x-icon" href="${path }/resources/images/main/favicon.jpg">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/groupfaq.css" />
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 <div class="inner-wrap">

@@ -1,5 +1,6 @@
 package com.acorn.soso.security;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,10 +40,10 @@ class AccessRulesTest extends OracleIntegrationTest {
 	@Test
 	void stateChangingRequestsNeedLogin() throws Exception {
 		// 예전에는 로그인 검사가 없어 세션 id 가 null 인 채로 가입 신청이 저장될 수 있었다.
-		mvc.perform(post("/group/join").param("num", "1").param("intro", "hi"))
+		mvc.perform(post("/group/join").with(csrf()).param("num", "1").param("intro", "hi"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/users/loginform?url=%2Fgroup%2Fjoin"));
-		mvc.perform(get("/group/jjim").param("num", "1"))
+		mvc.perform(post("/group/jjim").with(csrf()).param("num", "1"))
 				.andExpect(status().is3xxRedirection());
 	}
 

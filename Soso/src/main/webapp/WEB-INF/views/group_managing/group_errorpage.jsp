@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>에러 페이지</title>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<div class="container">

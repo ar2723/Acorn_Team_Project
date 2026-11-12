@@ -64,7 +64,7 @@ public class BookController {
 	
 	//책 삭제 기능(ajax로 삭제하기)
 	@ResponseBody
-	@RequestMapping("/test/bookDelete")
+	@PostMapping("/test/bookDelete")
 	public boolean bookDelete(int group_num, String isbn) {
 		BookService.bookDelete(isbn, group_num);
 		return true;

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/floating-labels/">
     <link href="${pageContext.request.contextPath}/resources/css/floating-labels.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 
 <body>

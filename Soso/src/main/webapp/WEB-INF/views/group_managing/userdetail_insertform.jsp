@@ -13,6 +13,7 @@
 		height: 300px;
 	}
 </style>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<div class="container">

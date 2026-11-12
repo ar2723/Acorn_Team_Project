@@ -13,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
 <style>
 </style>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">
@@ -55,8 +56,7 @@
 						      		cancelButtonText: '취소',
 					    		}).then((result) => {
 							      	if (result.isConfirmed) {
-								        location.href="${pageContext.request.contextPath}/group_managing/kick?num=${tmp.num}&group_num=${group_num}"
-							      	}
+								        postTo("${pageContext.request.contextPath}/group_managing/kick?num=${tmp.num}&group_num=${group_num}");}
 							    })
 							})
 						</script>

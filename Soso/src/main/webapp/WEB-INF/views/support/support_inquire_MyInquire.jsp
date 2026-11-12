@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/support/support_inquire_MyInquire.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar.jsp">
@@ -182,7 +183,7 @@
 					      	if (result.isConfirmed) {
 					      		Swal.fire('삭제 되었습니다.','success');
 					      		const csNum=e.target.getAttribute("data-num");
-								location.href="${pageContext.request.contextPath}/support/support_inquire_delete?cs_num=" + csNum;
+								postTo("${pageContext.request.contextPath}/support/support_inquire_delete?cs_num=" + csNum);
 					      	}else if(result.isDismissed){
 					      		location.href="${pageContext.request.contextPath}/support/support_inquire_MyInquire";
 					      	}

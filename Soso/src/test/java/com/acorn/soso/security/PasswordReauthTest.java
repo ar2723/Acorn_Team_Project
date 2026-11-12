@@ -1,5 +1,6 @@
 package com.acorn.soso.security;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -46,15 +47,15 @@ class PasswordReauthTest extends OracleIntegrationTest {
 
 	@Test
 	void actualChangeRequestsAlsoNeedReauth() throws Exception {
-		mvc.perform(post("/users/pwd_update").param("newPwd", "hacked").session(session).with(user("reader")))
+		mvc.perform(post("/users/pwd_update").with(csrf()).param("newPwd", "hacked").session(session).with(user("reader")))
 				.andExpect(status().is3xxRedirection());
-		mvc.perform(get("/users/delete").session(session).with(user("reader")))
+		mvc.perform(post("/users/delete").with(csrf()).session(session).with(user("reader")))
 				.andExpect(status().is3xxRedirection());
 	}
 
 	@Test
 	void wrongPasswordDoesNotGrantReauth() throws Exception {
-		mvc.perform(post("/users/pwd_auth").param("pwd", "wrong").param("url", "/users/updateform")
+		mvc.perform(post("/users/pwd_auth").with(csrf()).param("pwd", "wrong").param("url", "/users/updateform")
 				.session(session).with(user("reader")));
 
 		mvc.perform(get("/users/updateform").session(session).with(user("reader")))
@@ -63,7 +64,7 @@ class PasswordReauthTest extends OracleIntegrationTest {
 
 	@Test
 	void correctPasswordGrantsReauth() throws Exception {
-		mvc.perform(post("/users/pwd_auth").param("pwd", "pw1234!").param("url", "/users/updateform")
+		mvc.perform(post("/users/pwd_auth").with(csrf()).param("pwd", "pw1234!").param("url", "/users/updateform")
 				.session(session).with(user("reader")));
 
 		mvc.perform(get("/users/updateform").session(session).with(user("reader")))

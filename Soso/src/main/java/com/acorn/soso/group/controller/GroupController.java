@@ -43,7 +43,7 @@ public class GroupController {
 	private BookService BookService;
 
 	//소모임의 문의 답변 delete(실제로는 update)
-	@GetMapping("/group/answer/delete")
+	@PostMapping("/group/answer/delete")
 	public String groupAnswerDelete(HttpServletRequest request, int num, int group_num) {
 		service.groupAnswerDelete(request, num);
 		//param에 가져온 group_num으로 리다일렉트
@@ -104,7 +104,7 @@ public class GroupController {
 	}
 	
 	//소모임 FAQ문의 delete문
-	@GetMapping("/group/faq/delete")
+	@PostMapping("/group/faq/delete")
 	public String groupFaqDelete(HttpServletRequest request, int num, int group_num) {
 		service.deleteGroupFAQ(request, num);
 		//여기에서 num은 게시글 번호이기 때문에 제대로 리다일렉트가 안 된다. 서비스에서 값을 담아온다;
@@ -161,7 +161,7 @@ public class GroupController {
 
 	//가입 신청 취소를 위한 컨트롤러
 	@ResponseBody
-	@GetMapping("/group/cancleJoin")
+	@PostMapping("/group/cancleJoin")
 	public Map<String, Object> cancleJoin(HttpServletRequest request){
 		boolean isSuccess = service.cancleJoin(request);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -172,7 +172,7 @@ public class GroupController {
 	//찜기능을 위한 컨트롤러
 	//ajax를 위해 responseBody를 해준다.
 	@ResponseBody
-	@GetMapping("/group/jjim")
+	@PostMapping("/group/jjim")
 	public Map<String, Object> jjim(HttpServletRequest request) {
 		boolean isSuccess = service.jjim(request); // 서비스 메서드의 리턴 값을 받아옴
 		int jjimCount = service.jjimCount(request);//서비스 메소드의 리턴 값을 받아옴
@@ -184,7 +184,7 @@ public class GroupController {
 	}
 		
 	//리뷰 수정 요청 처리(json)
-	@RequestMapping("/group/review_update")
+	@PostMapping("/group/review_update")
 	@ResponseBody
 	public Map<String, Object> reviewUpdate(GroupReviewDto dto){
 		service.updateReview(dto);
@@ -244,7 +244,7 @@ public class GroupController {
 	}
 	
 	//리뷰 삭제
-	@GetMapping("/group/review_delete")
+	@PostMapping("/group/review_delete")
 	public String reviewDelete(HttpServletRequest request, int group_num){
 		service.deleteReview(request);
 		return "redirect:/group/group_page?num="+group_num;
@@ -263,7 +263,7 @@ public class GroupController {
 	}
 
 	//새로운 댓글 저장 요청 처리
-	@RequestMapping("group/comment/review_insert")
+	@PostMapping("group/comment/review_insert")
 	public String reviewInsert(GroupReviewDto dto, HttpSession session) {
 		//GroupReviewDtos는 필드값과 같은 파라미터를 알아서 가져온다.
 		service.saveReview(dto, session);

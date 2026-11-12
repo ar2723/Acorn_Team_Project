@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
     <link rel="shortcut icon" type="image/x-icon" href="${path }/resources/images/main/favicon.jpg">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/group/jjimlist.css" />
+  <script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
   </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">
@@ -117,7 +118,7 @@
 	        var num = $heart.siblings('input[name="groupNum"]').val();
 	        $.ajax({
 	            url: "${pageContext.request.contextPath}/group/jjim",
-	            method: "get",
+	            method: "post",
 	            data: { "num": num },
 	            success: function(data){
 	                if (data.isSuccess == true) {

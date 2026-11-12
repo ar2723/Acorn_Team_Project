@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -26,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.acorn.soso.naverLogin.NaverService;
+import com.acorn.soso.security.LegacySession;
 import com.acorn.soso.users.dto.UsersDto;
 import com.acorn.soso.users.service.UsersService;
 
@@ -160,7 +160,7 @@ public class UsersController {
 	}
 	
 	//회원 탈퇴 요청 처리
-	@GetMapping("/users/delete")
+	@PostMapping("/users/delete")
 	public String delete(HttpSession session, Model model, HttpServletRequest request) throws ServletException {
 		/*
 		 * 컨트롤러의 메소드로 전달받은 Model 객체를 서비스 객체에 전달해서
@@ -208,10 +208,12 @@ public class UsersController {
 	
 	//비밀번호 인증 요청 처리
 	@PostMapping("/users/pwd_auth")
-	public String pwdAuth(Model model, UsersDto dto, String url, HttpSession session) {
+	public String pwdAuth(Model model, UsersDto dto, HttpSession session, HttpServletRequest request) {
 		service.pwdAuth(dto, session, model);
 
-		String encodeUrl = URLEncoder.encode(url);
+		//같은 사이트 경로만 허용 (pwd_auth.jsp 가 <script> 안에 출력한다)
+		String url = LegacySession.safeRedirectUrl(request);
+		String encodeUrl = LegacySession.encode(url);
 		model.addAttribute("url", url);
 		model.addAttribute("encodedUrl", encodeUrl);
 		

@@ -5,6 +5,7 @@
 <html>
 <head>
 <title>NAVER LOGIN TEST</title>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 <h1>Login Form</h1>

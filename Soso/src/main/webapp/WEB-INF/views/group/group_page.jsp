@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/groupfaq.css" />
 	<link rel="stylesheet" href="${path }/resources/css/group_page.css" type="text/css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">
@@ -121,7 +122,7 @@
 										<textarea name="content" id="content" style="resize : none;" readonly>${tmp.content}</textarea>
 									</div>
 									<c:if test="${sessionScope.id == tmp.writer || sessionScope.id == manager_id}">
-										<a class="review_delete" href="${pageContext.request.contextPath}/group/review_delete?num=${tmp.review_num }&group_num=${tmp.group_num}" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
+										<a data-post class="review_delete" href="${pageContext.request.contextPath}/group/review_delete?num=${tmp.review_num }&group_num=${tmp.group_num}" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
 									</c:if>
 								</div>
 							</c:forEach>
@@ -233,7 +234,7 @@
 				// 요청 경로
 				url: "${pageContext.request.contextPath}/group/jjim",
 				// 요청 방식
-				method: "get",
+				method: "post",
 				// num이라는 파라미터를 request 영역에 담아둔다. 1은 테스트용 값
 				data: { "num": jjimNum },
 				success: function(data){
@@ -265,7 +266,7 @@
 
 				$.ajax({
 					url : "${pageContext.request.contextPath}/group/cancleJoin",
-					method : "get",
+					method : "post",
 					data : { "num" : jjimNum },
 					success: function(data){
 						// 신청 취소 버튼을 가입하기 버튼으로 변경

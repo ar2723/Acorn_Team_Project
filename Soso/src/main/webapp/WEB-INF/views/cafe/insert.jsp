@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>소모임 커뮤니티 글쓰기</title>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<script>

@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/group_managing_user_detail.css" />
 	<script src="${path }/resources/js/common.js"></script>
 	<script src="${path }/resources/js/jquery.lightbox-0.5.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">
@@ -100,7 +101,7 @@
 		function deleteConfirm() {
 			const isDelete = confirm("${id} 님 탈퇴 하시겠습니까?");
 			if (isDelete) {
-				location.href = "${pageContext.request.contextPath}/group_managing/group_userdropOut?group_num=${dto.num}";
+				postTo("${pageContext.request.contextPath}/group_managing/group_userdropOut?group_num=${dto.num}");
 			}
 		}
 

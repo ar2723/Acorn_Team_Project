@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <title>소모임 탈퇴하기</title>
 <link rel="shortcut icon" type="image/x-icon" href="${path }/resources/images/main/favicon.jpg">
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<div class="container">

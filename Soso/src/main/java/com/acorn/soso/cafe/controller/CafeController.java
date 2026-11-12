@@ -97,7 +97,7 @@ public class CafeController {
 		return "cafe/detail";
 	}
 	
-	@GetMapping("/cafe/delete")
+	@PostMapping("/cafe/delete")
 	public String delete(int comu_num, int group_num, HttpServletRequest request) {
 		//서비스에 삭제할 글번호와 HttpServletRequest 객체를 전달해서 해당글을 삭제 시키고 
 		service.deleteContent(comu_num, request);

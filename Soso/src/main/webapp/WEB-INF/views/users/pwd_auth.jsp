@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reset.css" type="text/css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/include/navbar_c.jsp">
@@ -32,7 +33,13 @@
 				      		cancelButtonText: '취소',
 				   		}).then((result) => {
 					      	if (result.isConfirmed) {
-					      		location.href="${requestScope.url}?isSuccess=${isSuccess}";
+					      		//회원 탈퇴는 상태를 바꾸는 요청이라 POST 로 보낸다. 재확인 여부는 서버 세션으로 판단한다.
+					      		const next = "${requestScope.url}";
+					      		if (next.endsWith("/users/delete")) {
+					      			postTo(next);
+					      		} else {
+					      			location.href = next;
+					      		}
 					      	}
 					    })
 					</script>

@@ -10,6 +10,7 @@
 <link rel="shortcut icon" type="image/x-icon" href="${path }/resources/images/main/favicon.jpg">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/group_managing/group_managing_group_insert.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.datetimepicker.min.css" />
+<script src="${pageContext.request.contextPath}/resources/js/csrf.js"></script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/include/navbar_c.jsp">
@@ -187,7 +188,7 @@
 		      		showCancelButton: true,
 		   		}).then((result) => {
 			      	if (result.isConfirmed) {
-			      		location.href="${pageContext.request.contextPath}/group_managing/group_delete?num=${dto.num}";
+			      		postTo("${pageContext.request.contextPath}/group_managing/group_delete?num=${dto.num}");
 			      	}
 			    })
 			})
