@@ -18,7 +18,7 @@ public class HomeController {
 	
 	@GetMapping("/")
 	public String home(HttpServletRequest request) {
-		return "redirect:main";
+		return "redirect:/main";
 	}
 	
 	@GetMapping("/main")

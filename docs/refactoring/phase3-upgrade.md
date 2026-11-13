@@ -90,6 +90,26 @@ V3 는 운영과 같은 상황(`'분류'` 행이 있는 V2 DB)을 로컬에 만�
 
 **같이 발견한 것**: FAQ 수정 화면(`support_faq_updateform.jsp`) 파일이 없다. FAQ 수정 기능은 원래부터 동작하지 않는다. Phase 2 에서 처리.
 
+## 운영 결함: 리다이렉트 Location 이 http:// 로 나감 (2026-11-13)
+
+**증상**: `https://bookmate.p-e.kr/` 응답이 `302 Location: http://bookmate.p-e.kr/main`. nginx 가 다시 https 로 301 을 보내서
+화면은 열리지만, 모든 리다이렉트(로그인 화면 이동, 로그인 후 복귀 포함)가 http 를 한 번 거친다.
+
+처음에는 "`/`가 로그인 화면으로 간다"고 판단했으나 잘못 본 것이다. 리다이렉트를 따라가면 `/main`(200)에 정상 도착한다.
+
+**원인**: nginx 가 https 로 받아 앱(127.0.0.1:9000)에는 http 로 넘긴다. 앱은 원래 scheme 을 모르기 때문에 Tomcat 이
+`sendRedirect`를 절대 주소(`http://...`)로 만든다.
+
+**조치**
+| 위치 | 내용 |
+|---|---|
+| `application.properties` | `server.tomcat.use-relative-redirects=true`. `Location`을 상대 경로로 보내서 브라우저가 https 를 유지 |
+| `HomeController` | `redirect:main` → `redirect:/main`. 상대 리다이렉트에서는 값이 그대로 나가므로 현재 경로와 무관하게 고정 |
+| `RedirectLocationHttpTest` | 실제 서버에서 `/` → `/main`, 로그인 리다이렉트가 `/users/loginform?url=...`로 시작하는지 확인(MockMvc 는 Tomcat 을 거치지 않아 검증 불가) |
+
+**남은 선택지**: nginx 가 `X-Forwarded-Proto`를 보내고 앱에 `server.forward-headers-strategy=native`를 설정하면
+앱이 https 요청임을 알게 된다(`request.isSecure()`, 쿠키 `Secure` 등). nginx 설정 확인이 필요해 보류.
+
 ## 3-2 예정 (Boot 4.1)
 
 - `spring-boot-starter-web` → `spring-boot-starter-webmvc` 등 모듈화된 스타터
