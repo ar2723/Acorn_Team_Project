@@ -100,15 +100,22 @@ V3 는 운영과 같은 상황(`'분류'` 행이 있는 V2 DB)을 로컬에 만�
 **원인**: nginx 가 https 로 받아 앱(127.0.0.1:9000)에는 http 로 넘긴다. 앱은 원래 scheme 을 모르기 때문에 Tomcat 이
 `sendRedirect`를 절대 주소(`http://...`)로 만든다.
 
-**조치**
+**1차 조치(효과 없음)**: `server.tomcat.use-relative-redirects=true`. 로컬 테스트는 통과했지만 운영은 그대로였다.
+서버에서 `curl -sI http://127.0.0.1:9000/`로 앱 응답을 직접 보면 상대 경로가 나왔다. 그런데 nginx 를 거치면 절대 주소였다.
+nginx 설정에는 `proxy_redirect`가 없다. 실제 원인은 Tomcat 이었다. `Request.getSupportsRelativeRedirects()`는
+HTTP/1.0 요청이면 `false`를 돌려주고, nginx 는 `proxy_http_version` 기본값이 1.0 이다. 로컬 테스트는 HTTP/1.1 이라 이 차이를 못 잡았다.
+
+**최종 조치**: nginx 가 이미 `X-Forwarded-Proto $scheme`, `X-Forwarded-For`, `Host`를 보내므로 앱이 이 헤더를 읽게 했다.
 | 위치 | 내용 |
 |---|---|
-| `application.properties` | `server.tomcat.use-relative-redirects=true`. `Location`을 상대 경로로 보내서 브라우저가 https 를 유지 |
+| `application.properties` | `server.forward-headers-strategy=native`(Tomcat `RemoteIpValve`, 127.0.0.1 등 내부 프록시만 신뢰). 절대 주소도 `https://`로 만든다. `use-relative-redirects`는 HTTP/1.1 직접 요청용으로 유지 |
 | `HomeController` | `redirect:main` → `redirect:/main`. 상대 리다이렉트에서는 값이 그대로 나가므로 현재 경로와 무관하게 고정 |
-| `RedirectLocationHttpTest` | 실제 서버에서 `/` → `/main`, 로그인 리다이렉트가 `/users/loginform?url=...`로 시작하는지 확인(MockMvc 는 Tomcat 을 거치지 않아 검증 불가) |
+| `RedirectLocationHttpTest` | 실제 서버 대상. HTTP/1.1 이면 상대 경로, nginx 와 같은 HTTP/1.0 + `X-Forwarded-Proto: https` 요청이면 `https://` 절대 주소. 설정을 끄면 운영과 같은 `http://`가 나와 실패하는 것을 확인 |
 
-**남은 선택지**: nginx 가 `X-Forwarded-Proto`를 보내고 앱에 `server.forward-headers-strategy=native`를 설정하면
-앱이 https 요청임을 알게 된다(`request.isSecure()`, 쿠키 `Secure` 등). nginx 설정 확인이 필요해 보류.
+**참고**
+- nginx 에 `proxy_http_version 1.1;`을 추가하면 상대 경로로 나간다. 앱 설정만으로 해결되어 nginx 는 바꾸지 않았다.
+- `curl -I`(HEAD) `/`는 로그인 화면으로 간다. `PUBLIC_PAGES`가 GET 만 허용하기 때문이며 브라우저(GET)는 영향이 없다.
+  처음에 "`/`가 로그인 화면으로 간다"고 본 것도 이 때문으로 보인다. 공개 화면에 HEAD 를 허용할지는 별도 판단.
 
 ## 3-2 예정 (Boot 4.1)
 
