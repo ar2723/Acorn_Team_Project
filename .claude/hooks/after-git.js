@@ -1,0 +1,56 @@
+// PostToolUse(Bash) 훅: git commit / master push 직후 test-runner 에이전트 호출을 메인 에이전트에게 알린다.
+// 훅은 에이전트를 직접 띄울 수 없으므로 additionalContext 로 지시를 주입한다.
+const { execSync } = require('child_process');
+
+const git = (args) => {
+  try {
+    return execSync(`git ${args}`, { cwd: process.env.CLAUDE_PROJECT_DIR || process.cwd(), encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch {
+    return '';
+  }
+};
+
+let raw = '';
+process.stdin.on('data', (c) => (raw += c));
+process.stdin.on('end', () => {
+  let cmd = '';
+  try {
+    cmd = JSON.parse(raw).tool_input?.command || '';
+  } catch {
+    return;
+  }
+
+  const isCommit = /\bgit\b(?:\s+-[cC]\s+\S+)*\s+commit\b/.test(cmd) && !/--dry-run/.test(cmd);
+  const isPush = /\bgit\b\s+push\b/.test(cmd);
+  if (!isCommit && !isPush) return;
+
+  const branch = git('rev-parse --abbrev-ref HEAD');
+  const head = git('rev-parse --short HEAD');
+  const messages = [];
+
+  if (isCommit) {
+    const files = git('diff --name-only HEAD~1..HEAD').split('\n').filter(Boolean);
+    const docsOnly = files.length > 0 && files.every((f) => /\.md$|^docs\/|^\.claude\//.test(f));
+    if (docsOnly) {
+      messages.push(`[test-runner 훅] 커밋 ${head}(${branch})은 문서/에이전트 설정만 바뀌어 local 테스트를 생략한다.`);
+    } else {
+      messages.push(
+        `[test-runner 훅] 커밋 ${head}(${branch})이 생성됐다. 다음 작업 전에 Agent 도구로 subagent_type "test-runner"를 호출한다. ` +
+          `프롬프트: "local 모드, 범위 HEAD~1..HEAD". 변경 파일 ${files.length}개: ${files.slice(0, 15).join(', ')}${files.length > 15 ? ' ...' : ''}`
+      );
+    }
+  }
+
+  const pushedMaster = isPush && (/\bmaster\b/.test(cmd) || (branch === 'master' && !/\s(origin\s+)?[\w./-]+:/.test(cmd) && !/--delete/.test(cmd)));
+  if (pushedMaster) {
+    messages.push(
+      `[test-runner 훅] master 가 push 됐다(${head}). 운영 배포가 시작된다. Agent 도구로 subagent_type "test-runner"를 호출한다. ` +
+        `프롬프트: "deploy 모드, 대상 커밋 ${head}".`
+    );
+  }
+
+  if (messages.length === 0) return;
+  process.stdout.write(
+    JSON.stringify({ hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: messages.join('\n') } })
+  );
+});

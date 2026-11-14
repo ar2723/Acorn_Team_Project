@@ -78,6 +78,13 @@ Java 21, Spring Boot 3.5.x. 환경변수(`.env.example` 참고): `DB_USERNAME`, 
 
 통합 테스트는 `support/OracleIntegrationTest`를 상속한다. JVM당 Oracle XE Testcontainer 하나를 띄우고 Flyway를 적용하며, 각 테스트는 `@Transactional`이라 끝나면 롤백된다. MockMvc의 `csrf()`는 토큰 저장소를 테스트용으로 바꿔 끼우기 때문에, 실제 쿠키 왕복은 실제 서버를 띄우는 `CsrfCookieHttpTest`에서만 검증된다. 일부 테스트는 현재 레거시 동작을 일부러 고정하는 특성 테스트다. 기대값을 "고치기" 전에 Phase 문서를 확인한다.
 
+**테스트 전담 에이전트 `test-runner`** (`.claude/agents/test-runner.md`). 테스트 실행은 직접 하지 말고 이 에이전트에 맡긴다.
+- 코드 수정을 **커밋한 직후**: `local` 모드로 호출하고 커밋 범위를 넘긴다(예: `local, HEAD~1..HEAD`). 변경 경로에 맞는 테스트만 돌린다.
+- master push 직전: `local` 모드 + "push 직전"이라고 알려 전체 테스트를 돌린다.
+- master push 직후: `deploy` 모드로 호출해 워크플로 결과와 운영 스모크를 확인한다.
+- 문서만 바뀐 커밋은 호출하지 않는다. 에이전트는 코드를 고치지 않으므로, 실패하면 보고를 보고 메인 대화에서 고친다.
+- 테스트 매핑 표에 없는 패키지나 테스트를 새로 만들면 에이전트 파일의 표도 같이 갱신한다.
+
 ## 배포
 
 `master`에 push 하면 `.github/workflows/deplow.yml`이 실행된다. `-DskipTests`로 WAR를 빌드해 SSH로 서버에 복사하고, 기존 `soso.war`를 백업한 뒤 `~/app/bookmate.env`를 읽고 9000 포트에서 `java -jar soso.war --spring.profiles.active=real`로 기동한다. CI에서 테스트를 돌리지 않으므로 master에 push 하기 전에 로컬에서 `./mvnw test`를 실행한다. master push는 곧 운영 배포이므로 사용자 확인 없이 하지 않는다.
