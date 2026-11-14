@@ -81,6 +81,8 @@ public class SecurityConfig {
 					.requestMatchers("/resources/**", "/error").permitAll()
 					.requestMatchers(ADMIN_ONLY).hasRole("ADMIN")
 					.requestMatchers(HttpMethod.GET, PUBLIC_PAGES).permitAll()
+					// HEAD 는 GET 과 같은 핸들러가 본문 없이 응답한다. 막으면 모니터링·링크 미리보기에서 로그인 화면 리다이렉트 루프가 난다.
+					.requestMatchers(HttpMethod.HEAD, PUBLIC_PAGES).permitAll()
 					.requestMatchers(PUBLIC_ACTIONS).permitAll()
 					.anyRequest().authenticated())
 			.formLogin(form -> form

@@ -3,6 +3,7 @@ package com.acorn.soso.security;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +28,15 @@ class AccessRulesTest extends OracleIntegrationTest {
 		mvc.perform(get("/group/list").param("genre", "-1")).andExpect(status().isOk());
 		mvc.perform(get("/support/support_notice")).andExpect(status().isOk());
 		mvc.perform(get("/users/loginform")).andExpect(status().isOk());
+	}
+
+	@Test
+	void headRequestsFollowPublicPageRules() throws Exception {
+		mvc.perform(head("/main")).andExpect(status().isOk());
+		mvc.perform(head("/users/loginform")).andExpect(status().isOk());
+		// 공개 페이지가 아니면 HEAD 도 로그인 화면으로 보낸다.
+		mvc.perform(head("/users/info"))
+				.andExpect(redirectedUrl("/users/loginform?url=%2Fusers%2Finfo"));
 	}
 
 	@Test
