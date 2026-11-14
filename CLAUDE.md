@@ -8,6 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **보안, 스키마, 플랫폼 코드를 바꾸기 전에 `docs/refactoring/phase*.md`를 먼저 읽는다.** 지금 구조가 왜 이렇게 되었는지, 알려진 레거시 버그, 다음 단계로 미룬 일(Phase 2: 서비스 계층 정리와 레거시 세션 브리지 제거, Phase 3-2: Boot 4.1)이 정리되어 있다. 문서와 커밋 메시지는 한국어로 쓰고, 커밋 제목은 `Phase N-M: ...` 또는 `fix: ...` 형식을 따른다.
 
+- 저장소는 **public**이다. 시크릿은 환경변수로만 받는다(`.env.example` 참고).
+- `Soso_Admin/`(어드민 앱)은 사용자가 로컬에서 작업 중이다. 요청 없이 건드리거나 커밋에 포함하지 않는다.
+- 네이버 로그인(`naverLogin`, `/users/socialaccess`)은 Security 인증과 연결되지 않은 보류 레거시다.
+
 ## 응답 언어
 
 사용자에게 보이는 글은 모두 한국어로 쓴다. 최종 답변뿐 아니라 작업 중간의 진행 상황 설명, 질문, 오류 보고도 마찬가지다. 코드, 명령어, 파일 경로, 로그 원문, 오류 메시지 원문, 클래스·설정 이름은 번역하지 않고 그대로 쓴다.
@@ -66,7 +70,7 @@ Java 21, Spring Boot 3.5.x. 환경변수(`.env.example` 참고): `DB_USERNAME`, 
 - **스키마**는 Flyway(`src/main/resources/db/migration`)가 관리한다. `V1__baseline_schema.sql`은 매퍼 SQL을 기준으로 역설계한 것이고, 이것이 기준이다. `WEB-INF/table.sql`은 오래된 파일이라 기준이 아니다. 기존 DB는 V1에서 baseline 처리되므로(`baseline-on-migrate`) 스키마 변경은 새 `V{n}__*.sql`로 추가하고, 이미 적용된 마이그레이션은 고치지 않는다. 테이블 이름은 `*_TB`.
 - **보안** (`security/SecurityConfig`): 기본은 로그인 필요(deny by default). 공개 GET 화면, 공개 요청, 관리자 전용 URL을 배열(`PUBLIC_PAGES`, `PUBLIC_ACTIONS`, `ADMIN_ONLY`)에 명시한다. 새 공개 화면은 여기에 추가하지 않으면 로그인이 필요하다. 역할은 `USERS_TB.ROLE`(USER/ADMIN)에서 읽는다. 컨트롤러가 JSP로 forward 할 수 있도록 FORWARD/INCLUDE/ERROR 디스패치는 허용한다.
 - **레거시 세션 브리지** (`LegacySession`): 레거시 코드는 로그인 사용자를 `session.getAttribute("id")`로 판단한다(Java, JSP 여러 곳). `LoginSuccessHandler`가 Spring Security 인증과 함께 이 값을 세션에 넣는다. Phase 2에서 `@AuthenticationPrincipal`로 바꿀 때까지 동작을 유지해야 한다. 로그인 후 이동할 `url`은 `LegacySession.safeRedirectUrl`을 통과해야 한다.
-- **CSRF**: 토큰을 `XSRF-TOKEN` 쿠키로 내려주고(`CsrfCookieFilter`가 항상 굽도록 함), XOR 마스킹 없이 원본 값을 비교한다(`CsrfTokenRequestAttributeHandler`). 모든 페이지 `<head>`에서 로드하는 `resources/js/csrf.js`가 POST 폼, jQuery/XHR, `fetch`에 토큰을 자동으로 붙인다. 상태를 바꾸는 엔드포인트는 모두 POST여야 한다. JSP에서는 일반 링크 대신 `<a data-post href=...>` 또는 `postTo(url)`을 쓴다. 새 페이지도 `csrf.js`를 넣어야 한다.
+- **CSRF**: 토큰을 `XSRF-TOKEN` 쿠키로 내려주고(`CsrfCookieFilter`가 항상 굽도록 함), XOR 마스킹 없이 원본 값을 비교한다(`CsrfTokenRequestAttributeHandler`). 모든 페이지 `<head>`에서 로드하는 `resources/js/csrf.js`가 POST 폼, jQuery/XHR, `fetch`에 토큰을 자동으로 붙인다. 상태를 바꾸는 엔드포인트는 모두 POST여야 한다. JSP에서는 일반 링크 대신 `<a data-post href=...>` 또는 `postTo(url)`을 쓴다. 새 페이지도 `csrf.js`를 넣어야 한다. `CsrfCookieFilter`나 `CsrfTokenRequestAttributeHandler`를 빼면 모든 POST가 403이 된다.
 - **인터셉터** (`config/WebConfig`): `PwdAuthInterceptor`는 회원정보·비밀번호 수정과 탈퇴에 비밀번호 재확인(10분 유효)을 요구한다. `SupportInterceptor`는 `/support/*`에서 `isAdmin`을 설정한다. 소모임 단위 권한(모임장만 가능한 작업) 검사는 아직 `GroupManagingController`에 있다.
 - **업로드 파일**은 `${file.location}`(프로필마다 다름)에 저장한다. 프로필: `local`(docker), `real`(운영, nginx 뒤에서 127.0.0.1에만 바인딩), `home`/`away`(레거시).
 
@@ -76,4 +80,4 @@ Java 21, Spring Boot 3.5.x. 환경변수(`.env.example` 참고): `DB_USERNAME`, 
 
 ## 배포
 
-`master`에 push 하면 `.github/workflows/deplow.yml`이 실행된다. `-DskipTests`로 WAR를 빌드해 SSH로 서버에 복사하고, 기존 `soso.war`를 백업한 뒤 `~/app/bookmate.env`를 읽고 9000 포트에서 `java -jar soso.war --spring.profiles.active=real`로 기동한다. CI에서 테스트를 돌리지 않으므로 master에 push 하기 전에 로컬에서 `./mvnw test`를 실행한다.
+`master`에 push 하면 `.github/workflows/deplow.yml`이 실행된다. `-DskipTests`로 WAR를 빌드해 SSH로 서버에 복사하고, 기존 `soso.war`를 백업한 뒤 `~/app/bookmate.env`를 읽고 9000 포트에서 `java -jar soso.war --spring.profiles.active=real`로 기동한다. CI에서 테스트를 돌리지 않으므로 master에 push 하기 전에 로컬에서 `./mvnw test`를 실행한다. master push는 곧 운영 배포이므로 사용자 확인 없이 하지 않는다.
