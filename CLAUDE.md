@@ -32,7 +32,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 결론부터 짧게 쓴다. 이미 말한 내용을 다시 요약하지 않고, 하지 않을 선택지는 늘어놓지 않는다.
 
 **환경 정보** (다시 찾지 않도록)
-- `mvnw`에 `JAVA_HOME`이 없으면 `~/.jdks`의 JDK 21을 그 명령에만 지정한다. 예: `$env:JAVA_HOME="$HOME\.jdks\ms-21.0.13.0.2"`
+- `mvnw`에 `JAVA_HOME`이 없으면 `~/.jdks`의 JDK 21을 그 명령에만 지정한다. 예: `$env:JAVA_HOME="$HOME\.jdks\jdk-21.0.13+9"`
 - `gh`는 로그인되어 있다. PATH에 없으면 `C:\Program Files\GitHub CLI\gh.exe`로 실행한다. 배포 결과는 `gh run list --limit 5`, 실패 로그는 `gh run view <id> --log-failed`로 본다.
 
 ## 사용자와 역할 나누기

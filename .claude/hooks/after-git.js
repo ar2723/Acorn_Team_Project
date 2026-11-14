@@ -20,8 +20,11 @@ process.stdin.on('end', () => {
     return;
   }
 
-  const isCommit = /\bgit\b(?:\s+-[cC]\s+\S+)*\s+commit\b/.test(cmd) && !/--dry-run/.test(cmd);
-  const isPush = /\bgit\b\s+push\b/.test(cmd);
+  // 명령의 시작이나 ; && || | 뒤에 오는 git 만 본다(문자열 안의 "git push" 오탐 방지).
+  const GIT = String.raw`(?:^|[;&|(])\s*git(?:\s+-[cC]\s+\S+)*\s+`;
+  const isCommit = new RegExp(GIT + String.raw`commit\b`).test(cmd) && !/--dry-run/.test(cmd);
+  const pushMatch = cmd.match(new RegExp(GIT + String.raw`push\b([^;&|]*)`));
+  const isPush = !!pushMatch && !/--dry-run|\s-n\b/.test(pushMatch[1]);
   if (!isCommit && !isPush) return;
 
   const branch = git('rev-parse --abbrev-ref HEAD');
@@ -41,7 +44,15 @@ process.stdin.on('end', () => {
     }
   }
 
-  const pushedMaster = isPush && (/\bmaster\b/.test(cmd) || (branch === 'master' && !/\s(origin\s+)?[\w./-]+:/.test(cmd) && !/--delete/.test(cmd)));
+  // 위치 인자: [remote, refspec...]. refspec 이 있으면 그 목적지로, 없으면 현재 브랜치로 판단한다.
+  const pushArgs = isPush ? pushMatch[1].trim().split(/\s+/).filter((a) => a && !a.startsWith('-')) : [];
+  const refspecs = pushArgs.slice(1);
+  const pushedMaster =
+    isPush &&
+    !/--delete|\s-d\b/.test(pushMatch[1]) &&
+    (refspecs.length
+      ? refspecs.some((r) => /^\+?(?:[^:]*:)?(?:refs\/heads\/)?master$/.test(r) || (r === 'HEAD' && branch === 'master'))
+      : branch === 'master');
   if (pushedMaster) {
     messages.push(
       `[test-runner 훅] master 가 push 됐다(${head}). 운영 배포가 시작된다. Agent 도구로 subagent_type "test-runner"를 호출한다. ` +
