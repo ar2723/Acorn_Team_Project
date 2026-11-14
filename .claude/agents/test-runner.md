@@ -37,7 +37,7 @@ model: sonnet
    | `cafe/**`, `book/**`, `Cafe*Mapper.xml`, `BookMapper.xml`, `CommonMapper.xml`, `naverLogin/**` | `SosoApplicationTests` (전용 테스트 없음 → 보고서에 "커버리지 공백"으로 표시) |
    | 변경된 `src/test/**` 파일 | 그 테스트 클래스 자체 |
    | JSP 만 변경 | 단위 테스트 없음. deploy 모드 스모크에서 해당 화면을 확인 대상으로 추가하라고 메모 |
-   | `docs/**`, `*.md`, `.claude/**` 만 변경 | 테스트 생략 |
+   | `docs/**`, `*.md`, `.claude/**`, `scripts/**` 만 변경 | 테스트 생략 (`scripts/smoke.sh` 가 바뀌었으면 deploy 모드에서 한 번 실행해 동작 확인) |
    | `.github/workflows/**` | 테스트 생략, deploy 모드에서 워크플로 결과를 반드시 확인하라고 메모 |
 
    실행: `cd Soso && ./mvnw test -Dtest='<클래스1>,<클래스2>'` (필터 적용).
@@ -46,23 +46,12 @@ model: sonnet
 ## deploy 모드 (master push 후)
 
 1. **워크플로 확인**: `gh run list --branch master --limit 3` 에서 대상 커밋 SHA 의 실행을 찾는다. 진행 중이면 `gh run watch <id> --exit-status > /dev/null 2>&1; gh run list --limit 1`. 실패면 `gh run view <id> --log-failed | tail -40` 으로 원인 단계만 보고하고 운영 테스트는 하지 않는다.
-2. **기동 대기**: 워크플로 성공 뒤에도 앱이 뜨는 데 시간이 걸린다. `GET /main` 이 200 이 될 때까지 10초 간격으로 최대 12번 확인한다. 끝내 안 되면 502/타임아웃 여부를 구분해 보고한다(이 서버는 공유기 문제로 외부 접속이 간헐적으로 끊긴다. 앱 문제인지 네트워크 문제인지 구분할 것: `curl` 이 연결 자체를 못 하면 네트워크, nginx 502 면 앱 미기동).
-3. **운영 스모크 (읽기 전용)**. 운영 데이터를 만들거나 바꾸는 요청(로그인 시도 반복, 글 작성, 가입 등)은 하지 않는다.
-
-   | 확인 | 기대 |
-   |---|---|
-   | `GET /` | `/main` 으로 302, 따라가면 200 |
-   | `GET`, `HEAD` 각각 `/main`, `/users/loginform`, `/group/list?genre=-1`, `/support/support_notice`, `/support/support_faq` | 200 |
-   | `GET /users/info` (비로그인) | 302, `Location` 이 `https://` 로 시작하고 `/users/loginform?url=` 포함 |
-   | `GET /support/support_inquire_inquireStatus` (비로그인) | 로그인 화면으로 302 |
-   | `GET /resources/js/csrf.js` | 200 |
-   | `GET /main` 응답 헤더 | `Set-Cookie: XSRF-TOKEN` 있음 |
-   | `POST /users/logout` (토큰 없음) | 403 (CSRF 동작) |
-   | `http://` 로 접속 | `https://` 로 리다이렉트 |
-
-   `curl -s -o /dev/null --max-time 10 -w '%{http_code} %{redirect_url}\n'` 형식으로 상태 코드만 본다. 본문은 실패한 경우에만 앞부분을 본다. HEAD 확인은 `curl -sI`(HEAD 를 쓴다는 점 주의: GET 확인에 `-I` 를 쓰지 않는다).
-4. **변경 화면 추가 확인**: 이번 범위에서 바뀐 JSP/컨트롤러의 공개 GET 경로가 있으면 위 표에 더해 200 인지 확인한다. 로그인이 필요한 화면은 302 로 가는지까지만 본다.
-5. **인증서 만료**: `echo | openssl s_client -servername bookmate.p-e.kr -connect bookmate.p-e.kr:443 2>/dev/null | openssl x509 -noout -enddate`. 30일 이내면 경고.
+2. **운영 스모크**: 저장소 루트에서 `bash scripts/smoke.sh` 한 번만 실행한다. 범위가 문서/설정(`*.md`, `docs/**`, `.claude/**`)뿐이면 `bash scripts/smoke.sh --quick`.
+   - 스크립트가 기동 대기(10초 간격 최대 12회), 공개 페이지 GET/HEAD, 비공개 페이지 리다이렉트(https 유지), CSRF 쿠키와 토큰 없는 POST 거부, http→https, 인증서 만료 경고를 모두 확인한다. 모두 읽기 전용 요청이다.
+   - 출력은 실패 항목만 `FAIL ...` 한 줄씩 나오고 마지막 줄이 요약이다. 항목을 curl 로 따로 다시 확인하지 않는다.
+   - 종료 코드: 0 통과, 1 점검 실패, 2 앱 미기동(502 등, 서버 로그 필요), 3 연결 불가(공유기/네트워크 문제 추정).
+   - 실패(1)일 때만 해당 경로를 `curl -s --max-time 10 <URL> | head -c 500` 으로 본문 앞부분까지 보고 원인 후보를 적는다.
+3. **변경 화면 추가 확인**: 이번 범위에서 바뀐 JSP/컨트롤러의 공개 GET 경로가 스크립트 목록에 없으면 그 경로만 `curl -s -o /dev/null --max-time 10 -w '%{http_code}\n'` 로 200 인지 확인한다. 로그인이 필요한 화면은 302 로 가는지까지만 본다. 스크립트 목록에 계속 둘 만한 경로면 보고서에 "smoke.sh 에 추가 권장"으로 적는다.
 
 ## 보고 형식
 
@@ -73,7 +62,7 @@ model: sonnet
 - 범위: <커밋 범위>, 변경 영역: <security, group ...>
 - 실행: <테스트 클래스들> → N개 통과 / M개 실패   (생략했다면 이유)
 - 정적 점검: 이상 없음 | <발견 내용>
-- 운영(deploy 모드): 워크플로 <성공/실패, 소요>, 스모크 <N/M 통과>
+- 운영(deploy 모드): 워크플로 <성공/실패, 소요>, smoke.sh 마지막 줄 그대로
 - 실패 상세: <테스트/요청, 기대 vs 실제, 원인 후보 1~2줄>
 - 커버리지 공백: <전용 테스트가 없는 변경 영역>
 - 권장 조치: <롤백 검토, 사용자에게 서버 로그 요청 등>

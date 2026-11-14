@@ -30,7 +30,7 @@ process.stdin.on('end', () => {
 
   if (isCommit) {
     const files = git('diff --name-only HEAD~1..HEAD').split('\n').filter(Boolean);
-    const docsOnly = files.length > 0 && files.every((f) => /\.md$|^docs\/|^\.claude\//.test(f));
+    const docsOnly = files.length > 0 && files.every((f) => /\.md$|^docs\/|^\.claude\/|^scripts\//.test(f));
     if (docsOnly) {
       messages.push(`[test-runner 훅] 커밋 ${head}(${branch})은 문서/에이전트 설정만 바뀌어 local 테스트를 생략한다.`);
     } else {
@@ -45,7 +45,7 @@ process.stdin.on('end', () => {
   if (pushedMaster) {
     messages.push(
       `[test-runner 훅] master 가 push 됐다(${head}). 운영 배포가 시작된다. Agent 도구로 subagent_type "test-runner"를 호출한다. ` +
-        `프롬프트: "deploy 모드, 대상 커밋 ${head}".`
+        `프롬프트: "deploy 모드, 대상 커밋 ${head}". 앱 코드 변경 없이 문서/설정만 push 했다면 에이전트 대신 \`bash scripts/smoke.sh --quick\` 만 실행해도 된다.`
     );
   }
 
