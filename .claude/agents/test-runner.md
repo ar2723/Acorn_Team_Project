@@ -46,7 +46,7 @@ model: sonnet
 ## deploy 모드 (master push 후)
 
 1. **워크플로 확인**: `gh run list --branch master --limit 3` 에서 대상 커밋 SHA 의 실행을 찾는다. 진행 중이면 `gh run watch <id> --exit-status > /dev/null 2>&1; gh run list --limit 1`. 실패면 `gh run view <id> --log-failed | tail -40` 으로 원인 단계만 보고하고 운영 테스트는 하지 않는다.
-2. **운영 스모크**: 저장소 루트에서 `bash scripts/smoke.sh` 한 번만 실행한다. 범위가 문서/설정(`*.md`, `docs/**`, `.claude/**`)뿐이면 `bash scripts/smoke.sh --quick`.
+2. **운영 스모크**: 저장소 루트에서 `bash scripts/smoke.sh; echo "exit=$?"` 형태로 한 번만 실행한다. 출력을 `tail`, `grep` 등 파이프로 넘기지 않는다(파이프 뒤의 `$?`는 smoke.sh 가 아니라 마지막 명령의 종료 코드다). 출력은 실패 항목과 요약 한 줄뿐이라 필터가 필요 없다. 보고서에는 `exit=` 값을 그대로 적는다. 범위가 문서/설정(`*.md`, `docs/**`, `.claude/**`)뿐이면 `bash scripts/smoke.sh --quick`.
    - 스크립트가 기동 대기(10초 간격 최대 12회), 공개 페이지 GET/HEAD, 비공개 페이지 리다이렉트(https 유지), CSRF 쿠키와 토큰 없는 POST 거부, http→https, 인증서 만료 경고를 모두 확인한다. 모두 읽기 전용 요청이다.
    - 출력은 실패 항목만 `FAIL ...` 한 줄씩 나오고 마지막 줄이 요약이다. 항목을 curl 로 따로 다시 확인하지 않는다.
    - 종료 코드: 0 통과, 1 점검 실패, 2 앱 미기동(502 등, 서버 로그 필요), 3 연결 불가(공유기/네트워크 문제 추정).
