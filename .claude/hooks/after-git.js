@@ -1,6 +1,17 @@
 // PostToolUse(Bash) 훅: git commit / master push 직후 test-runner 에이전트 호출을 메인 에이전트에게 알린다.
 // 훅은 에이전트를 직접 띄울 수 없으므로 additionalContext 로 지시를 주입한다.
 const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+// 진단 로그: 훅이 실행됐는지, 무엇을 출력했는지 남긴다(.gitignore 대상). 64KB 넘으면 새로 시작.
+const LOG = path.join(__dirname, 'after-git.log');
+const log = (line) => {
+  try {
+    if (fs.existsSync(LOG) && fs.statSync(LOG).size > 64 * 1024) fs.unlinkSync(LOG);
+    fs.appendFileSync(LOG, `${new Date().toISOString()} ${line}\n`);
+  } catch {}
+};
 
 const git = (args) => {
   try {
@@ -14,18 +25,26 @@ let raw = '';
 process.stdin.on('data', (c) => (raw += c));
 process.stdin.on('end', () => {
   let cmd = '';
+  let tool = '?';
   try {
-    cmd = JSON.parse(raw).tool_input?.command || '';
-  } catch {
+    const input = JSON.parse(raw);
+    cmd = input.tool_input?.command || '';
+    tool = input.tool_name || '?';
+  } catch (e) {
+    log(`stdin 파싱 실패: ${e.message} (${raw.length}바이트)`);
     return;
   }
+  const brief = cmd.split(/\r?\n/)[0].slice(0, 100);
 
   // 명령의 시작이나 ; && || | 뒤에 오는 git 만 본다(문자열 안의 "git push" 오탐 방지).
   const GIT = String.raw`(?:^|[;&|(])\s*git(?:\s+-[cC]\s+\S+)*\s+`;
   const isCommit = new RegExp(GIT + String.raw`commit\b`).test(cmd) && !/--dry-run/.test(cmd);
   const pushMatch = cmd.match(new RegExp(GIT + String.raw`push\b([^;&|]*)`));
   const isPush = !!pushMatch && !/--dry-run|\s-n\b/.test(pushMatch[1]);
-  if (!isCommit && !isPush) return;
+  if (!isCommit && !isPush) {
+    if (/\bgit\b/.test(cmd)) log(`[${tool}] 해당 없음: ${brief}`);
+    return;
+  }
 
   const branch = git('rev-parse --abbrev-ref HEAD');
   const head = git('rev-parse --short HEAD');
@@ -33,7 +52,7 @@ process.stdin.on('end', () => {
 
   if (isCommit) {
     const files = git('diff --name-only HEAD~1..HEAD').split('\n').filter(Boolean);
-    const docsOnly = files.length > 0 && files.every((f) => /\.md$|^docs\/|^\.claude\/|^scripts\//.test(f));
+    const docsOnly = files.length > 0 && files.every((f) => /\.md$|^docs\/|^\.claude\/|^scripts\/|^\.git(ignore|attributes)$/.test(f));
     if (docsOnly) {
       messages.push(`[test-runner 훅] 커밋 ${head}(${branch})은 문서/에이전트 설정만 바뀌어 local 테스트를 생략한다.`);
     } else {
@@ -60,6 +79,7 @@ process.stdin.on('end', () => {
     );
   }
 
+  log(`[${tool}] commit=${isCommit} push=${isPush} master=${pushedMaster}: ${brief}\n    -> ${messages.join(' | ') || '(출력 없음)'}`);
   if (messages.length === 0) return;
   process.stdout.write(
     JSON.stringify({ hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: messages.join('\n') } })
