@@ -10,8 +10,7 @@ import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +24,10 @@ public class UsersServiceImpl implements UsersService{
 	
 	@Autowired
 	private UsersDao dao;
+
+	// SecurityConfig 의 PasswordEncoder 빈(로그인 인증과 같은 인코더)
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	// application.properties 문서에 있는 파일의 저장위치 설정정보 읽어오기
 	@Value("${file.location}")
@@ -40,10 +43,8 @@ public class UsersServiceImpl implements UsersService{
 			dto.setSocial(2);
 			dao.insert(dto);
 		}else {//일반회원가입
-			//비밀번호를 암호화해줄 객체를 생성
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 			//암호화된 비밀번호 얻어내서
-			String encodedPwd = encoder.encode(dto.getPwd());
+			String encodedPwd = passwordEncoder.encode(dto.getPwd());
 			//UsersDto 객체에 담고
 			dto.setPwd(encodedPwd);
 			//소셜은 0으로 설정해준다.
@@ -75,7 +76,7 @@ public class UsersServiceImpl implements UsersService{
 		//클라이언트가 입력한 비밀번호
 		String inputPwd = dto.getPwd();
 		//두 비밀번호가 일치하는지 확인
-		boolean isValid = BCrypt.checkpw(inputPwd, encodedPwd);
+		boolean isValid = passwordEncoder.matches(inputPwd, encodedPwd);
 		
 		return isValid;
 	}
@@ -106,8 +107,7 @@ public class UsersServiceImpl implements UsersService{
 		dto.setId(id); //id값을 담아서 메소드로 보냄
 
 			//새로운 비밀번호를 암호화 한다.
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			String encodedNewPwd = encoder.encode(dto.getNewPwd());
+			String encodedNewPwd = passwordEncoder.encode(dto.getNewPwd());
 			//암호화된 비밀번호를 dto에 다시 넣어준다.
 			dto.setNewPwd(encodedNewPwd);
 			//dto에 로그인된 아이디도 넣어준다.
@@ -254,12 +254,10 @@ public class UsersServiceImpl implements UsersService{
 	        String newPwd = password.toString(); //StringBuffer 를 String 으로 변환
 			dto.setNewPwd(newPwd);
 			
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
 			//먼저 임시비밀번호를 모델에 담은 후
 			model.addAttribute("tmpPwd",dto.getNewPwd());
 			//암호화를 하고
-			String encodedNewPwd = encoder.encode(dto.getNewPwd());
+			String encodedNewPwd = passwordEncoder.encode(dto.getNewPwd());
 			dto.setNewPwd(encodedNewPwd);
 			dto.setId(id);
 			

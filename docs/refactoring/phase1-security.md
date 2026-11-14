@@ -111,6 +111,6 @@ MockMvc의 `csrf()`는 토큰 저장소를 테스트용으로 바꿔 끼우기 �
 ## 남은 것
 
 - 네이버 로그인(`/users/socialaccess`)은 세션에 `id`만 넣어서 Security 인증이 되지 않는다. 기능 자체를 다시 설계할 때 OAuth2 Client로 교체한다.
-- `UsersServiceImpl`이 아직 `new BCryptPasswordEncoder()`를 직접 생성한다. Phase 2에서 `PasswordEncoder` 빈으로 바꾼다.
+- ~~`UsersServiceImpl`이 `new BCryptPasswordEncoder()`를 직접 생성~~ → `PasswordEncoder` 빈 주입으로 교체 완료(2026-11-14). `isSamePwd`의 `BCrypt.checkpw`도 `matches`로 바꿔, 해시가 아닌 값(소셜 회원의 빈 비밀번호)이 오면 예외 대신 `false`를 돌려준다.
 - **리소스 단위 권한 누락**: `/test/bookUpdate`, `/test/bookDelete`(모임 책 목록 수정)에 모임장 검사가 없어서 로그인한 사용자 누구나 다른 모임의 책 목록을 바꿀 수 있다. Phase 2에서 소유자 검사를 서비스 계층으로 모을 때 함께 처리한다.
 - `test/test.jsp`는 EUC-KR 인코딩의 테스트 페이지라 csrf.js 적용에서 뺐다(폼 없음). Phase 2에서 `test/` 화면 정리 시 삭제 검토.
